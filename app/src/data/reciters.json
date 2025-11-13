@@ -1,0 +1,36 @@
+[
+  {
+    "id": "abdul-basit",
+    "nameArabic": "عبد الباسط عبد الصمد",
+    "nameEnglish": "Abdul Basit Abdul Samad",
+    "photo": "",
+    "bio": "One of the most renowned Quran reciters, known for his powerful and emotional recitation.",
+    "style": "Murattal",
+    "country": "Egypt",
+    "sources": [
+      {
+        "sourceId": "everyayah",
+        "sourceName": "EveryAyah.com",
+        "baseUrl": "https://everyayah.com/data/Abdul_Basit_Murattal_192kbps",
+        "qualities": ["high"]
+      }
+    ]
+  },
+  {
+    "id": "mishary-alafasy",
+    "nameArabic": "مشاري بن راشد العفاسي",
+    "nameEnglish": "Mishary Rashid Alafasy",
+    "photo": "",
+    "bio": "Popular Kuwaiti Quran reciter with a beautiful and clear voice.",
+    "style": "Murattal",
+    "country": "Kuwait",
+    "sources": [
+      {
+        "sourceId": "everyayah",
+        "sourceName": "EveryAyah.com",
+        "baseUrl": "https://everyayah.com/data/Alafasy_128kbps",
+        "qualities": ["medium"]
+      }
+    ]
+  }
+]

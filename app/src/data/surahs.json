@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "nameArabic": "الفاتحة",
+    "nameEnglish": "Al-Fatihah",
+    "transliteration": "Al-Fatihah",
+    "revelationPlace": "Makkah",
+    "numberOfAyahs": 7
+  },
+  {
+    "id": 2,
+    "nameArabic": "البقرة",
+    "nameEnglish": "Al-Baqarah",
+    "transliteration": "Al-Baqarah",
+    "revelationPlace": "Madinah",
+    "numberOfAyahs": 286
+  },
+  {
+    "id": 3,
+    "nameArabic": "آل عمران",
+    "nameEnglish": "Aali Imran",
+    "transliteration": "Aali Imran",
+    "revelationPlace": "Madinah",
+    "numberOfAyahs": 200
+  }
+]
