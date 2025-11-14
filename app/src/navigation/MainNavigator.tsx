@@ -9,6 +9,7 @@ import RecitersScreen from '../screens/RecitersScreen';
 import LibraryScreen from '../screens/LibraryScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import PlayerScreen from '../screens/PlayerScreen';
+import {SurahsScreen} from '../screens/SurahsScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -72,6 +73,21 @@ export default function MainNavigator() {
         headerShown: false,
       }}>
       <Stack.Screen name="MainTabs" component={TabNavigator} />
+      <Stack.Screen
+        name="Surahs"
+        component={SurahsScreen}
+        options={{
+          headerShown: true,
+          headerTitle: 'Select Surah',
+          headerStyle: {
+            backgroundColor: COLORS.primary,
+          },
+          headerTintColor: COLORS.white,
+          headerTitleStyle: {
+            fontWeight: '600',
+          },
+        }}
+      />
       <Stack.Screen
         name="Player"
         component={PlayerScreen}

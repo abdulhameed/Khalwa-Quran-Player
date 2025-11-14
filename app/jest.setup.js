@@ -124,3 +124,48 @@ jest.mock('react-native-track-player', () => ({
     StopPlaybackAndRemoveNotification: 'stop-playback-and-remove-notification',
   },
 }));
+
+// Mock @react-native-async-storage/async-storage
+jest.mock('@react-native-async-storage/async-storage', () => ({
+  __esModule: true,
+  default: {
+    getItem: jest.fn(() => Promise.resolve(null)),
+    setItem: jest.fn(() => Promise.resolve()),
+    removeItem: jest.fn(() => Promise.resolve()),
+    multiRemove: jest.fn(() => Promise.resolve()),
+    clear: jest.fn(() => Promise.resolve()),
+  },
+}));
+
+// Mock react-native-fs
+jest.mock('react-native-fs', () => ({
+  DocumentDirectoryPath: '/mock/documents',
+  exists: jest.fn(() => Promise.resolve(true)),
+  mkdir: jest.fn(() => Promise.resolve()),
+  unlink: jest.fn(() => Promise.resolve()),
+  stat: jest.fn(() => Promise.resolve({size: '1000000'})),
+  downloadFile: jest.fn(() => ({
+    jobId: 1,
+    promise: Promise.resolve({statusCode: 200}),
+  })),
+  stopDownload: jest.fn(),
+}));
+
+// Mock @react-native-community/netinfo
+jest.mock('@react-native-community/netinfo', () => ({
+  __esModule: true,
+  default: {
+    fetch: jest.fn(() =>
+      Promise.resolve({
+        type: 'wifi',
+        isConnected: true,
+      })
+    ),
+  },
+  fetch: jest.fn(() =>
+    Promise.resolve({
+      type: 'wifi',
+      isConnected: true,
+    })
+  ),
+}));

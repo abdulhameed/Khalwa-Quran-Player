@@ -14,6 +14,7 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import MainNavigator from './src/navigation/MainNavigator';
 import {COLORS} from './src/utils/constants';
 import {setupPlayer} from './src/services/AudioService';
+import {DownloadProvider} from './src/contexts/DownloadContext';
 
 function App() {
   const [isPlayerReady, setIsPlayerReady] = useState(false);
@@ -44,12 +45,14 @@ function App() {
   return (
     <GestureHandlerRootView style={styles.container}>
       <SafeAreaProvider>
-        <NavigationContainer>
-          <StatusBar barStyle="dark-content" backgroundColor={COLORS.white} />
-          <View style={styles.container}>
-            <MainNavigator />
-          </View>
-        </NavigationContainer>
+        <DownloadProvider>
+          <NavigationContainer>
+            <StatusBar barStyle="dark-content" backgroundColor={COLORS.white} />
+            <View style={styles.container}>
+              <MainNavigator />
+            </View>
+          </NavigationContainer>
+        </DownloadProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );
