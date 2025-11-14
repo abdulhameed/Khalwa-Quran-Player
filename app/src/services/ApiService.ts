@@ -116,6 +116,53 @@ export const buildAudioUrl = (
 };
 
 /**
+ * Check if a source provides full surah files or per-ayah files
+ */
+export const isFullSurahSource = (sourceId: string): boolean => {
+  // These sources provide complete surah files
+  const fullSurahSources = ['mp3quran', 'quranicaudio'];
+  return fullSurahSources.includes(sourceId);
+};
+
+/**
+ * Build URLs for all ayahs in a surah (for per-ayah sources)
+ */
+export const buildAyahUrls = (
+  reciter: Reciter,
+  surah: Surah,
+): string[] => {
+  const source = reciter.sources[0];
+
+  if (!source) {
+    throw new Error(`No sources available for reciter: ${reciter.nameEnglish}`);
+  }
+
+  const urls: string[] = [];
+
+  switch (source.sourceId) {
+    case 'everyayah':
+      const everyAyahCode = source.baseUrl.split('/').pop() || '';
+      for (let ayah = 1; ayah <= surah.numberOfAyahs; ayah++) {
+        urls.push(buildEveryAyahUrl(everyAyahCode, surah.id, ayah));
+      }
+      break;
+
+    case 'qurancom':
+      const quranComCode = source.baseUrl.split('/').pop() || '';
+      for (let ayah = 1; ayah <= surah.numberOfAyahs; ayah++) {
+        urls.push(buildQuranComUrl(quranComCode, surah.id, ayah));
+      }
+      break;
+
+    default:
+      // For full surah sources, just return a single URL
+      urls.push(buildAudioUrl(reciter, surah));
+  }
+
+  return urls;
+};
+
+/**
  * Validate if a URL is accessible
  */
 export const validateAudioUrl = async (url: string): Promise<boolean> => {

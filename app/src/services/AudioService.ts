@@ -95,6 +95,62 @@ export const playSurah = async (
 };
 
 /**
+ * Build a track object for an individual ayah
+ */
+export const buildAyahTrack = (
+  surah: Surah,
+  reciter: Reciter,
+  url: string,
+  ayahNumber: number,
+): Track => {
+  return {
+    url,
+    title: `${surah.nameEnglish} - Ayah ${ayahNumber}`,
+    artist: reciter.nameEnglish,
+    artwork: reciter.photo || undefined,
+    id: `${reciter.id}-${surah.id}-${ayahNumber}`,
+    // Custom metadata
+    surahId: surah.id,
+    reciterId: reciter.id,
+    surahNameArabic: surah.nameArabic,
+    reciterNameArabic: reciter.nameArabic,
+    ayahNumber,
+  };
+};
+
+/**
+ * Play full surah by creating a playlist of all ayahs
+ */
+export const playSurahFull = async (
+  surah: Surah,
+  reciter: Reciter,
+  urls: string[],
+): Promise<void> => {
+  try {
+    // Reset the queue
+    await TrackPlayer.reset();
+
+    // Build tracks for all ayahs
+    const tracks = urls.map((url, index) =>
+      buildAyahTrack(surah, reciter, url, index + 1),
+    );
+
+    // Add all tracks to the queue
+    await TrackPlayer.add(tracks);
+
+    // Start playing
+    await TrackPlayer.play();
+
+    console.log(
+      `Playing full surah: ${surah.nameEnglish} by ${reciter.nameEnglish} (${urls.length} ayahs)`,
+    );
+  } catch (error) {
+    console.error('Error playing full surah:', error);
+    throw error;
+  }
+};
+
+/**
  * Play/Resume
  */
 export const play = async (): Promise<void> => {
