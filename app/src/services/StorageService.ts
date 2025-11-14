@@ -11,6 +11,7 @@ const STORAGE_KEYS = {
   DOWNLOADS: '@khalwa:downloads',
   PREFERENCES: '@khalwa:preferences',
   DOWNLOAD_QUEUE: '@khalwa:download_queue',
+  FAVORITES: '@khalwa:favorites',
 };
 
 /**
@@ -287,6 +288,112 @@ export const getTotalDownloadedSize = async (): Promise<number> => {
   } catch (error) {
     console.error('Error getting total downloaded size:', error);
     return 0;
+  }
+};
+
+/**
+ * Favorite item type
+ */
+export interface FavoriteItem {
+  reciterId: string;
+  surahId: number;
+  addedAt: number;
+}
+
+/**
+ * Get all favorites
+ */
+export const getFavorites = async (): Promise<FavoriteItem[]> => {
+  try {
+    const data = await AsyncStorage.getItem(STORAGE_KEYS.FAVORITES);
+    return data ? JSON.parse(data) : [];
+  } catch (error) {
+    console.error('Error getting favorites:', error);
+    return [];
+  }
+};
+
+/**
+ * Check if item is favorited
+ */
+export const isFavorite = async (reciterId: string, surahId: number): Promise<boolean> => {
+  try {
+    const favorites = await getFavorites();
+    return favorites.some(f => f.reciterId === reciterId && f.surahId === surahId);
+  } catch (error) {
+    console.error('Error checking favorite:', error);
+    return false;
+  }
+};
+
+/**
+ * Add to favorites
+ */
+export const addFavorite = async (reciterId: string, surahId: number): Promise<void> => {
+  try {
+    const favorites = await getFavorites();
+
+    // Check if already favorited
+    if (favorites.some(f => f.reciterId === reciterId && f.surahId === surahId)) {
+      return;
+    }
+
+    favorites.push({
+      reciterId,
+      surahId,
+      addedAt: Date.now(),
+    });
+
+    await AsyncStorage.setItem(STORAGE_KEYS.FAVORITES, JSON.stringify(favorites));
+  } catch (error) {
+    console.error('Error adding favorite:', error);
+    throw error;
+  }
+};
+
+/**
+ * Remove from favorites
+ */
+export const removeFavorite = async (reciterId: string, surahId: number): Promise<void> => {
+  try {
+    const favorites = await getFavorites();
+    const filtered = favorites.filter(f => !(f.reciterId === reciterId && f.surahId === surahId));
+    await AsyncStorage.setItem(STORAGE_KEYS.FAVORITES, JSON.stringify(filtered));
+  } catch (error) {
+    console.error('Error removing favorite:', error);
+    throw error;
+  }
+};
+
+/**
+ * Toggle favorite
+ */
+export const toggleFavorite = async (reciterId: string, surahId: number): Promise<boolean> => {
+  try {
+    const isCurrentlyFavorite = await isFavorite(reciterId, surahId);
+
+    if (isCurrentlyFavorite) {
+      await removeFavorite(reciterId, surahId);
+      return false;
+    } else {
+      await addFavorite(reciterId, surahId);
+      return true;
+    }
+  } catch (error) {
+    console.error('Error toggling favorite:', error);
+    throw error;
+  }
+};
+
+/**
+ * Clear all favorites
+ */
+export const clearFavorites = async (): Promise<void> => {
+  try {
+    await AsyncStorage.setItem(STORAGE_KEYS.FAVORITES, JSON.stringify([]));
+  } catch (error) {
+    console.error('Error clearing favorites:', error);
+    throw error;
   }
 };
 

@@ -18,6 +18,9 @@ import * as AudioService from '../services/AudioService';
 import {buildAudioUrl, buildAyahUrls, isFullSurahSource} from '../services/ApiService';
 import * as DownloadService from '../services/DownloadService';
 import * as PlaybackStateService from '../services/PlaybackStateService';
+import * as StorageService from '../services/StorageService';
+import {useDownload} from '../contexts/DownloadContext';
+import {AUDIO_QUALITY} from '../utils/constants';
 
 type PlayerScreenRouteProp = RouteProp<
   {Player: {surah: Surah; reciter: Reciter}},
@@ -28,6 +31,7 @@ export default function PlayerScreen() {
   const route = useRoute<PlayerScreenRouteProp>();
   const {surah, reciter} = route.params;
   const progress = useProgress();
+  const downloadContext = useDownload();
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -35,6 +39,9 @@ export default function PlayerScreen() {
   const [repeatMode, setRepeatMode] = useState<'off' | 'one' | 'all'>('off');
   const [isShuffleEnabled, setIsShuffleEnabled] = useState(false);
   const [isSeeking, setIsSeeking] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [isDownloaded, setIsDownloaded] = useState(false);
+  const [downloadProgress, setDownloadProgress] = useState(0);
 
   const progressBarRef = useRef<View>(null);
   const progressBarWidth = useRef(0);
@@ -59,11 +66,22 @@ export default function PlayerScreen() {
 
   useEffect(() => {
     initializePlayer();
+    checkFavoriteStatus();
+    checkDownloadStatus();
 
     return () => {
       // Cleanup if needed
     };
   }, []);
+
+  // Check download status periodically
+  useEffect(() => {
+    const downloadStatus = downloadContext.getDownloadStatus(reciter.id, surah.id);
+    const progress = downloadContext.getDownloadProgress(reciter.id, surah.id);
+
+    setIsDownloaded(downloadStatus === 'completed');
+    setDownloadProgress(progress);
+  }, [downloadContext.downloads, downloadContext.downloadProgress]);
 
   useEffect(() => {
     const checkPlaybackState = async () => {
@@ -234,6 +252,37 @@ export default function PlayerScreen() {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
+  const checkFavoriteStatus = async () => {
+    const favoriteStatus = await StorageService.isFavorite(reciter.id, surah.id);
+    setIsFavorite(favoriteStatus);
+  };
+
+  const checkDownloadStatus = async () => {
+    const downloaded = await DownloadService.isFileDownloaded(reciter.id, surah.id);
+    setIsDownloaded(downloaded);
+  };
+
+  const handleToggleFavorite = async () => {
+    try {
+      const newStatus = await StorageService.toggleFavorite(reciter.id, surah.id);
+      setIsFavorite(newStatus);
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+    }
+  };
+
+  const handleDownload = async () => {
+    if (isDownloaded) return;
+
+    try {
+      // Use user's preferred quality
+      const preferences = await StorageService.getUserPreferences();
+      await downloadContext.startDownload(reciter, surah, preferences.defaultQuality);
+    } catch (error) {
+      console.error('Error starting download:', error);
+    }
+  };
+
   const getRepeatIcon = () => {
     switch (repeatMode) {
       case 'off':
@@ -254,6 +303,44 @@ export default function PlayerScreen() {
         <Text style={styles.surahName}>{surah.nameEnglish}</Text>
         <Text style={styles.surahNameArabic}>{surah.nameArabic}</Text>
         <Text style={styles.reciterName}>{reciter.nameEnglish}</Text>
+      </View>
+
+      {/* Action buttons */}
+      <View style={styles.actionButtons}>
+        <TouchableOpacity
+          style={styles.actionButton}
+          onPress={handleToggleFavorite}
+          hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}>
+          <Text style={styles.actionButtonIcon}>
+            {isFavorite ? '❤️' : '🤍'}
+          </Text>
+          <Text style={styles.actionButtonLabel}>
+            {isFavorite ? 'Favorited' : 'Favorite'}
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.actionButton, isDownloaded && styles.actionButtonDisabled]}
+          onPress={handleDownload}
+          disabled={isDownloaded}
+          hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}>
+          {isDownloaded ? (
+            <>
+              <Text style={styles.actionButtonIcon}>✓</Text>
+              <Text style={styles.actionButtonLabel}>Downloaded</Text>
+            </>
+          ) : downloadProgress > 0 && downloadProgress < 100 ? (
+            <>
+              <Text style={styles.actionButtonIcon}>⏬</Text>
+              <Text style={styles.actionButtonLabel}>{Math.round(downloadProgress)}%</Text>
+            </>
+          ) : (
+            <>
+              <Text style={styles.actionButtonIcon}>⬇️</Text>
+              <Text style={styles.actionButtonLabel}>Download</Text>
+            </>
+          )}
+        </TouchableOpacity>
       </View>
 
       {/* Progress */}
@@ -396,6 +483,32 @@ const styles = StyleSheet.create({
   reciterName: {
     fontSize: DIMENSIONS.fontSize.lg,
     color: COLORS.textSecondary,
+  },
+  actionButtons: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: DIMENSIONS.spacing.xl,
+    marginTop: DIMENSIONS.spacing.lg,
+    marginBottom: DIMENSIONS.spacing.md,
+  },
+  actionButton: {
+    alignItems: 'center',
+    paddingVertical: DIMENSIONS.spacing.sm,
+    paddingHorizontal: DIMENSIONS.spacing.md,
+    minWidth: 100,
+  },
+  actionButtonDisabled: {
+    opacity: 0.5,
+  },
+  actionButtonIcon: {
+    fontSize: 28,
+    marginBottom: DIMENSIONS.spacing.xs / 2,
+  },
+  actionButtonLabel: {
+    fontSize: DIMENSIONS.fontSize.sm,
+    color: COLORS.text,
+    fontWeight: '500',
   },
   progressContainer: {
     marginVertical: DIMENSIONS.spacing.xl,
