@@ -814,8 +814,11 @@ Example: https://server8.mp3quran.net/basit/001.mp3
   - [x] @react-native-async-storage/async-storage
   - [x] react-native-fs or rn-fetch-blob
   - [x] @react-native-community/netinfo
+  - [x] react-native-gesture-handler
+  - [x] react-native-screens
+  - [x] react-native-safe-area-context
   - [ ] react-native-reanimated
-- [ ] Configure iOS project (Xcode, permissions)
+- [x] Configure iOS project (Xcode, permissions)
 - [ ] Configure Android project (Gradle, permissions)
 - [x] Set up basic navigation structure (4 bottom tabs)
 - [x] Create color constants and theme configuration
