@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import TrackPlayer, {useProgress, State, Track, usePlaybackState} from 'react-native-track-player';
+import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS, DIMENSIONS} from '../utils/constants';
 import * as AudioService from '../services/AudioService';
 
@@ -91,9 +92,11 @@ export default function MiniPlayer() {
           style={styles.playButton}
           onPress={togglePlayPause}
           hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}>
-          <Text style={styles.playButtonText}>
-            {isPlaying ? '⏸' : '▶'}
-          </Text>
+          <Icon
+            name={isPlaying ? 'pause' : 'play'}
+            size={22}
+            color={COLORS.white}
+          />
         </TouchableOpacity>
       </View>
     </TouchableOpacity>
@@ -158,9 +161,5 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 3,
     elevation: 4,
-  },
-  playButtonText: {
-    fontSize: 20,
-    color: COLORS.white,
   },
 });

@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import {useRoute, RouteProp} from '@react-navigation/native';
 import TrackPlayer, {useProgress, State} from 'react-native-track-player';
+import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS, DIMENSIONS} from '../utils/constants';
 import {Surah, Reciter} from '../utils/types';
 import * as AudioService from '../services/AudioService';
@@ -283,19 +284,6 @@ export default function PlayerScreen() {
     }
   };
 
-  const getRepeatIcon = () => {
-    switch (repeatMode) {
-      case 'off':
-        return '🔁';
-      case 'one':
-        return '🔂';
-      case 'all':
-        return '🔁';
-      default:
-        return '🔁';
-    }
-  };
-
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -311,9 +299,12 @@ export default function PlayerScreen() {
           style={styles.actionButton}
           onPress={handleToggleFavorite}
           hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}>
-          <Text style={styles.actionButtonIcon}>
-            {isFavorite ? '❤️' : '🤍'}
-          </Text>
+          <Icon
+            name={isFavorite ? 'heart' : 'heart-outline'}
+            size={28}
+            color={isFavorite ? '#E74C3C' : COLORS.text}
+            style={styles.actionButtonIcon}
+          />
           <Text style={styles.actionButtonLabel}>
             {isFavorite ? 'Favorited' : 'Favorite'}
           </Text>
@@ -326,17 +317,32 @@ export default function PlayerScreen() {
           hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}>
           {isDownloaded ? (
             <>
-              <Text style={styles.actionButtonIcon}>✓</Text>
+              <Icon
+                name="checkmark-circle"
+                size={28}
+                color={COLORS.primary}
+                style={styles.actionButtonIcon}
+              />
               <Text style={styles.actionButtonLabel}>Downloaded</Text>
             </>
           ) : downloadProgress > 0 && downloadProgress < 100 ? (
             <>
-              <Text style={styles.actionButtonIcon}>⏬</Text>
+              <Icon
+                name="download"
+                size={28}
+                color={COLORS.primary}
+                style={styles.actionButtonIcon}
+              />
               <Text style={styles.actionButtonLabel}>{Math.round(downloadProgress)}%</Text>
             </>
           ) : (
             <>
-              <Text style={styles.actionButtonIcon}>⬇️</Text>
+              <Icon
+                name="download-outline"
+                size={28}
+                color={COLORS.text}
+                style={styles.actionButtonIcon}
+              />
               <Text style={styles.actionButtonLabel}>Download</Text>
             </>
           )}
@@ -390,9 +396,11 @@ export default function PlayerScreen() {
         <TouchableOpacity
           style={styles.modeButton}
           onPress={toggleRepeatMode}>
-          <Text style={[styles.modeIcon, repeatMode !== 'off' && styles.modeIconActive]}>
-            {getRepeatIcon()}
-          </Text>
+          <Icon
+            name={repeatMode === 'one' ? 'repeat-once' : 'repeat'}
+            size={24}
+            color={repeatMode !== 'off' ? COLORS.primary : COLORS.textSecondary}
+          />
           <Text style={[styles.modeLabel, repeatMode !== 'off' && styles.modeLabelActive]}>
             {repeatMode === 'one' ? 'One' : repeatMode === 'all' ? 'All' : 'Off'}
           </Text>
@@ -401,16 +409,22 @@ export default function PlayerScreen() {
         <TouchableOpacity
           style={styles.modeButton}
           onPress={changeSpeed}>
-          <Text style={styles.modeIcon}>⚡</Text>
+          <Icon
+            name="speedometer-outline"
+            size={24}
+            color={COLORS.textSecondary}
+          />
           <Text style={styles.modeLabel}>{playbackSpeed}x</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.modeButton}
           onPress={toggleShuffle}>
-          <Text style={[styles.modeIcon, isShuffleEnabled && styles.modeIconActive]}>
-            🔀
-          </Text>
+          <Icon
+            name="shuffle"
+            size={24}
+            color={isShuffleEnabled ? COLORS.primary : COLORS.textSecondary}
+          />
           <Text style={[styles.modeLabel, isShuffleEnabled && styles.modeLabelActive]}>
             Shuffle
           </Text>
@@ -422,7 +436,7 @@ export default function PlayerScreen() {
         <TouchableOpacity
           style={styles.controlButton}
           onPress={handleSkipPrevious}>
-          <Text style={styles.controlIcon}>⏮</Text>
+          <Icon name="play-skip-back" size={28} color={COLORS.primary} />
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -432,16 +446,18 @@ export default function PlayerScreen() {
           {isLoading ? (
             <ActivityIndicator size="large" color={COLORS.white} />
           ) : (
-            <Text style={styles.playButtonText}>
-              {isPlaying ? '⏸' : '▶'}
-            </Text>
+            <Icon
+              name={isPlaying ? 'pause' : 'play'}
+              size={36}
+              color={COLORS.white}
+            />
           )}
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.controlButton}
           onPress={handleSkipNext}>
-          <Text style={styles.controlIcon}>⏭</Text>
+          <Icon name="play-skip-forward" size={28} color={COLORS.primary} />
         </TouchableOpacity>
       </View>
 
@@ -502,7 +518,6 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   actionButtonIcon: {
-    fontSize: 28,
     marginBottom: DIMENSIONS.spacing.xs / 2,
   },
   actionButtonLabel: {
@@ -572,14 +587,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: DIMENSIONS.spacing.sm,
   },
-  modeIcon: {
-    fontSize: 24,
-    marginBottom: DIMENSIONS.spacing.xs / 2,
-    opacity: 0.5,
-  },
-  modeIconActive: {
-    opacity: 1,
-  },
   modeLabel: {
     fontSize: DIMENSIONS.fontSize.xs,
     color: COLORS.textSecondary,
@@ -608,10 +615,6 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
-  controlIcon: {
-    fontSize: 24,
-    color: COLORS.primary,
-  },
   playButton: {
     width: 80,
     height: 80,
@@ -624,10 +627,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 8,
-  },
-  playButtonText: {
-    fontSize: 32,
-    color: COLORS.white,
   },
   infoContainer: {
     alignItems: 'center',
