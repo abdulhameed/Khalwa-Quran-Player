@@ -17,6 +17,9 @@ end
 target 'QuranPlayer' do
   config = use_native_modules!
 
+  # Alias for RNWorklets to resolve react-native-reanimated dependency
+  pod 'RNWorklets', :podspec => './RNWorklets.podspec'
+
   use_react_native!(
     :path => config[:reactNativePath],
     # An absolute path to your application root.
