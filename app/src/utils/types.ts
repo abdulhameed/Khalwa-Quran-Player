@@ -55,6 +55,12 @@ export interface Download {
   downloadedAt: number;
   status: DownloadStatus;
   progress?: number; // 0-100
+  // Metadata for queue processing
+  reciterNameEnglish?: string;
+  reciterNameArabic?: string;
+  surahNameEnglish?: string;
+  surahNameArabic?: string;
+  url?: string; // Audio URL for download
 }
 
 /**

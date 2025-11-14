@@ -21,6 +21,12 @@ interface DownloadJob {
 // Active downloads tracking
 const activeDownloads: Map<string, DownloadJob> = new Map();
 
+// Maximum concurrent downloads (PRD requires 3-5)
+const MAX_CONCURRENT_DOWNLOADS = 5;
+
+// Queue processing flag
+let isProcessingQueue = false;
+
 // Download callbacks
 type DownloadProgressCallback = (downloadId: string, progress: number) => void;
 type DownloadStatusCallback = (downloadId: string, status: string) => void;
@@ -92,6 +98,7 @@ export const createDownload = async (
   const downloadId = `${reciter.id}_${surah.id}_${quality}`;
   const localPath = getFilePath(reciter.id, surah.id);
   const fileSize = getEstimatedFileSize(surah.duration, quality);
+  const url = buildAudioUrl(reciter, surah, quality);
 
   const download: Download = {
     id: downloadId,
@@ -104,6 +111,12 @@ export const createDownload = async (
     downloadedAt: Date.now(),
     status: DOWNLOAD_STATUS.NOT_DOWNLOADED,
     progress: 0,
+    // Store metadata for queue processing
+    reciterNameEnglish: reciter.nameEnglish,
+    reciterNameArabic: reciter.nameArabic,
+    surahNameEnglish: surah.nameEnglish,
+    surahNameArabic: surah.nameArabic,
+    url,
   };
 
   await StorageService.saveDownload(download);
@@ -158,9 +171,9 @@ export const downloadFile = async (
  */
 const startDownload = async (
   download: Download,
-  reciter: Reciter,
-  surah: Surah,
-  quality: AudioQuality,
+  reciter?: Reciter,
+  surah?: Surah,
+  quality?: AudioQuality,
 ): Promise<void> => {
   try {
     // Update status to downloading
@@ -169,8 +182,18 @@ const startDownload = async (
     await StorageService.saveDownload(download);
     statusCallback?.(download.id, DOWNLOAD_STATUS.DOWNLOADING);
 
-    // Build audio URL
-    const url = buildAudioUrl(reciter, surah, quality);
+    // Build audio URL (use stored URL if available, otherwise build it)
+    let url = download.url;
+    if (!url && reciter && surah && quality) {
+      url = buildAudioUrl(reciter, surah, quality);
+      // Store the URL for future use
+      download.url = url;
+      await StorageService.saveDownload(download);
+    }
+
+    if (!url) {
+      throw new Error('No URL available for download');
+    }
 
     // Ensure directory exists
     await ensureDirectoryExists(download.localPath);
@@ -274,6 +297,9 @@ export const pauseDownload = async (downloadId: string): Promise<void> => {
 
 /**
  * Resume a download
+ * Note: Currently restarts the download from beginning.
+ * True resume with HTTP range requests would require server support
+ * and more complex implementation with partial file management.
  */
 export const resumeDownload = async (downloadId: string): Promise<void> => {
   const download = await StorageService.getDownload(downloadId);
@@ -282,12 +308,11 @@ export const resumeDownload = async (downloadId: string): Promise<void> => {
     throw new Error('Download not found');
   }
 
-  if (download.status !== DOWNLOAD_STATUS.PAUSED) {
-    throw new Error('Download is not paused');
+  if (download.status !== DOWNLOAD_STATUS.PAUSED && download.status !== DOWNLOAD_STATUS.FAILED) {
+    throw new Error('Download is not paused or failed');
   }
 
-  // For now, restart the download (full resume would require range requests)
-  // TODO: Implement proper resume with range requests
+  // Restart the download
   await retryDownload(downloadId);
 };
 
@@ -394,45 +419,93 @@ const addToQueue = async (downloadId: string): Promise<void> => {
 
 /**
  * Process download queue
+ * Supports concurrent downloads (up to MAX_CONCURRENT_DOWNLOADS)
  */
 export const processQueue = async (): Promise<void> => {
-  // Check if already downloading
-  if (activeDownloads.size > 0) {
+  // Prevent concurrent queue processing
+  if (isProcessingQueue) {
     return;
   }
 
-  // Get queue
-  const queue = await StorageService.getDownloadQueue();
+  isProcessingQueue = true;
 
-  if (queue.length === 0) {
-    return;
+  try {
+    // Check if we've reached max concurrent downloads
+    if (activeDownloads.size >= MAX_CONCURRENT_DOWNLOADS) {
+      isProcessingQueue = false;
+      return;
+    }
+
+    // Get queue
+    const queue = await StorageService.getDownloadQueue();
+
+    if (queue.length === 0) {
+      isProcessingQueue = false;
+      return;
+    }
+
+    // Check WiFi requirement for all queued downloads
+    const preferences = await StorageService.getUserPreferences();
+    if (preferences.wifiOnlyDownloads) {
+      const isWiFi = await isWiFiConnected();
+      if (!isWiFi) {
+        // WiFi required but not available - keep items in queue
+        console.log('WiFi required for downloads. Waiting for WiFi connection...');
+        isProcessingQueue = false;
+        return;
+      }
+    }
+
+    // Process multiple downloads up to MAX_CONCURRENT_DOWNLOADS
+    const downloadsToStart = Math.min(
+      MAX_CONCURRENT_DOWNLOADS - activeDownloads.size,
+      queue.length
+    );
+
+    for (let i = 0; i < downloadsToStart; i++) {
+      const downloadId = queue[i];
+      const download = await StorageService.getDownload(downloadId);
+
+      if (!download) {
+        // Remove invalid download from queue
+        await StorageService.removeFromDownloadQueue(downloadId);
+        continue;
+      }
+
+      // Skip if already completed
+      if (download.status === DOWNLOAD_STATUS.COMPLETED) {
+        await StorageService.removeFromDownloadQueue(downloadId);
+        continue;
+      }
+
+      // Skip if already downloading
+      if (activeDownloads.has(downloadId)) {
+        continue;
+      }
+
+      // Start download without blocking (fire and forget)
+      startDownloadFromQueue(download).catch(error => {
+        console.error(`Error starting download ${downloadId} from queue:`, error);
+      });
+    }
+  } catch (error) {
+    console.error('Error processing queue:', error);
+  } finally {
+    isProcessingQueue = false;
   }
+};
 
-  // Get first item in queue
-  const downloadId = queue[0];
-  const download = await StorageService.getDownload(downloadId);
-
-  if (!download) {
-    // Remove invalid download from queue
-    await StorageService.removeFromDownloadQueue(downloadId);
-    await processQueue();
-    return;
+/**
+ * Start a download from the queue
+ * This is called by processQueue and doesn't require reciter/surah objects
+ */
+const startDownloadFromQueue = async (download: Download): Promise<void> => {
+  try {
+    await startDownload(download);
+  } catch (error) {
+    console.error(`Failed to start download ${download.id}:`, error);
+    throw error;
   }
-
-  // Skip if already completed
-  if (download.status === DOWNLOAD_STATUS.COMPLETED) {
-    await StorageService.removeFromDownloadQueue(downloadId);
-    await processQueue();
-    return;
-  }
-
-  // Start download (need to get reciter and surah info)
-  // This is a limitation - we need to store more metadata or fetch it
-  // For now, we'll skip and just remove from queue
-  // TODO: Store reciter and surah info in download metadata
-  console.log('Queue processing requires reciter/surah info - skipping:', downloadId);
-  await StorageService.removeFromDownloadQueue(downloadId);
-  await processQueue();
 };
 
 /**
@@ -440,6 +513,86 @@ export const processQueue = async (): Promise<void> => {
  */
 export const getActiveDownloadsCount = (): number => {
   return activeDownloads.size;
+};
+
+/**
+ * Initialize download service
+ * Should be called on app startup to resume queued downloads
+ */
+export const initializeDownloadService = async (): Promise<void> => {
+  try {
+    console.log('Initializing download service...');
+
+    // Process any queued downloads
+    await processQueue();
+
+    // Set up WiFi change listener to resume downloads when WiFi becomes available
+    NetInfo.addEventListener(state => {
+      if (state.type === 'wifi' && state.isConnected) {
+        console.log('WiFi connected - processing queue...');
+        processQueue().catch(error => {
+          console.error('Error processing queue on WiFi connect:', error);
+        });
+      }
+    });
+
+    console.log('Download service initialized');
+  } catch (error) {
+    console.error('Error initializing download service:', error);
+  }
+};
+
+/**
+ * Get queue length
+ */
+export const getQueueLength = async (): Promise<number> => {
+  const queue = await StorageService.getDownloadQueue();
+  return queue.length;
+};
+
+/**
+ * Queue multiple downloads
+ * Creates download records and adds them to queue without starting immediately
+ */
+export const queueMultipleDownloads = async (
+  reciter: Reciter,
+  surahs: Surah[],
+  quality: AudioQuality,
+): Promise<void> => {
+  // Check WiFi requirement
+  const preferences = await StorageService.getUserPreferences();
+  if (preferences.wifiOnlyDownloads) {
+    const isWiFi = await isWiFiConnected();
+    if (!isWiFi) {
+      console.log('Downloads queued. Will start when WiFi is available.');
+    }
+  }
+
+  // Create download records and add to queue
+  for (const surah of surahs) {
+    const downloadId = `${reciter.id}_${surah.id}_${quality}`;
+
+    // Check if download already exists
+    let download = await StorageService.getDownload(downloadId);
+
+    if (!download) {
+      download = await createDownload(reciter, surah, quality);
+    }
+
+    // Skip if already completed
+    if (download.status === DOWNLOAD_STATUS.COMPLETED) {
+      const fileExists = await RNFS.exists(download.localPath);
+      if (fileExists) {
+        continue;
+      }
+    }
+
+    // Add to queue
+    await addToQueue(downloadId);
+  }
+
+  // Start processing queue
+  await processQueue();
 };
 
 /**
