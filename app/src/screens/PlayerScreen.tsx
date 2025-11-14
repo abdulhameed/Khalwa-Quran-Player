@@ -1,10 +1,14 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
+  TouchableWithoutFeedback,
+  GestureResponderEvent,
+  PanResponder,
+  Animated,
 } from 'react-native';
 import {useRoute, RouteProp} from '@react-navigation/native';
 import TrackPlayer, {useProgress, State} from 'react-native-track-player';
@@ -29,6 +33,28 @@ export default function PlayerScreen() {
   const [playbackSpeed, setPlaybackSpeed] = useState(1.0);
   const [repeatMode, setRepeatMode] = useState<'off' | 'one' | 'all'>('off');
   const [isShuffleEnabled, setIsShuffleEnabled] = useState(false);
+  const [isSeeking, setIsSeeking] = useState(false);
+
+  const progressBarRef = useRef<View>(null);
+  const progressBarWidth = useRef(0);
+
+  // Pan responder for drag-to-seek
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderGrant: (event) => {
+        setIsSeeking(true);
+        handleProgressBarSeek(event.nativeEvent.locationX);
+      },
+      onPanResponderMove: (event) => {
+        handleProgressBarSeek(event.nativeEvent.locationX);
+      },
+      onPanResponderRelease: () => {
+        setTimeout(() => setIsSeeking(false), 300);
+      },
+    })
+  ).current;
 
   useEffect(() => {
     initializePlayer();
@@ -100,6 +126,26 @@ export default function PlayerScreen() {
 
   const handleSeek = async (value: number) => {
     await AudioService.seekTo(value);
+  };
+
+  const handleProgressBarSeek = (locationX: number) => {
+    if (progress.duration === 0 || progressBarWidth.current === 0) return;
+
+    // Calculate seek position, ensuring it's within bounds
+    const seekPosition = (locationX / progressBarWidth.current) * progress.duration;
+    const clampedPosition = Math.max(0, Math.min(seekPosition, progress.duration));
+
+    handleSeek(clampedPosition);
+  };
+
+  const handleProgressBarPress = (event: GestureResponderEvent) => {
+    setIsSeeking(true);
+    handleProgressBarSeek(event.nativeEvent.locationX);
+    setTimeout(() => setIsSeeking(false), 300);
+  };
+
+  const handleProgressBarLayout = (event: any) => {
+    progressBarWidth.current = event.nativeEvent.layout.width;
   };
 
   const changeSpeed = async () => {
@@ -176,19 +222,39 @@ export default function PlayerScreen() {
 
       {/* Progress */}
       <View style={styles.progressContainer}>
-        <View style={styles.progressBar}>
-          <View
-            style={[
-              styles.progressFill,
-              {
-                width: `${
-                  progress.duration > 0
-                    ? (progress.position / progress.duration) * 100
-                    : 0
-                }%`,
-              },
-            ]}
-          />
+        <View
+          ref={progressBarRef}
+          style={styles.progressBarContainer}
+          onLayout={handleProgressBarLayout}
+          {...panResponder.panHandlers}>
+          <View style={styles.progressBar}>
+            <View
+              style={[
+                styles.progressFill,
+                {
+                  width: `${
+                    progress.duration > 0
+                      ? (progress.position / progress.duration) * 100
+                      : 0
+                  }%`,
+                },
+              ]}
+            />
+          </View>
+          {/* Seek thumb indicator */}
+          {progress.duration > 0 && (
+            <View
+              style={[
+                styles.progressThumb,
+                {
+                  left: `${
+                    (progress.position / progress.duration) * 100
+                  }%`,
+                },
+                isSeeking && styles.progressThumbActive,
+              ]}
+            />
+          )}
         </View>
         <View style={styles.timeContainer}>
           <Text style={styles.timeText}>{formatTime(progress.position)}</Text>
@@ -298,6 +364,11 @@ const styles = StyleSheet.create({
   progressContainer: {
     marginVertical: DIMENSIONS.spacing.xl,
   },
+  progressBarContainer: {
+    paddingVertical: DIMENSIONS.spacing.md, // Increase touch area
+    marginVertical: -DIMENSIONS.spacing.md,
+    position: 'relative',
+  },
   progressBar: {
     height: 4,
     backgroundColor: COLORS.lightGray,
@@ -305,8 +376,32 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   progressFill: {
-    height: '100%',
+    height: 4,
     backgroundColor: COLORS.primary,
+    borderRadius: DIMENSIONS.borderRadius.sm,
+  },
+  progressThumb: {
+    position: 'absolute',
+    top: '50%',
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: COLORS.primary,
+    marginLeft: -6,
+    marginTop: -4,
+    borderWidth: 2,
+    borderColor: COLORS.white,
+    shadowColor: COLORS.black,
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 4,
+  },
+  progressThumbActive: {
+    transform: [{scale: 1.3}],
+    shadowOpacity: 0.4,
+    shadowRadius: 5,
+    elevation: 6,
   },
   timeContainer: {
     flexDirection: 'row',
