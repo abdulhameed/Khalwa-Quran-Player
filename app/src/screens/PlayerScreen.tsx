@@ -1,18 +1,27 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
+  TouchableWithoutFeedback,
+  GestureResponderEvent,
+  PanResponder,
+  Animated,
 } from 'react-native';
 import {useRoute, RouteProp} from '@react-navigation/native';
 import TrackPlayer, {useProgress, State} from 'react-native-track-player';
+import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS, DIMENSIONS} from '../utils/constants';
 import {Surah, Reciter} from '../utils/types';
 import * as AudioService from '../services/AudioService';
 import {buildAudioUrl, buildAyahUrls, isFullSurahSource} from '../services/ApiService';
 import * as DownloadService from '../services/DownloadService';
+import * as PlaybackStateService from '../services/PlaybackStateService';
+import * as StorageService from '../services/StorageService';
+import {useDownload} from '../contexts/DownloadContext';
+import {AUDIO_QUALITY} from '../utils/constants';
 
 type PlayerScreenRouteProp = RouteProp<
   {Player: {surah: Surah; reciter: Reciter}},
@@ -23,20 +32,57 @@ export default function PlayerScreen() {
   const route = useRoute<PlayerScreenRouteProp>();
   const {surah, reciter} = route.params;
   const progress = useProgress();
+  const downloadContext = useDownload();
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [playbackSpeed, setPlaybackSpeed] = useState(1.0);
   const [repeatMode, setRepeatMode] = useState<'off' | 'one' | 'all'>('off');
   const [isShuffleEnabled, setIsShuffleEnabled] = useState(false);
+  const [isSeeking, setIsSeeking] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [isDownloaded, setIsDownloaded] = useState(false);
+  const [downloadProgress, setDownloadProgress] = useState(0);
+
+  const progressBarRef = useRef<View>(null);
+  const progressBarWidth = useRef(0);
+
+  // Pan responder for drag-to-seek
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderGrant: (event) => {
+        setIsSeeking(true);
+        handleProgressBarSeek(event.nativeEvent.locationX);
+      },
+      onPanResponderMove: (event) => {
+        handleProgressBarSeek(event.nativeEvent.locationX);
+      },
+      onPanResponderRelease: () => {
+        setTimeout(() => setIsSeeking(false), 300);
+      },
+    })
+  ).current;
 
   useEffect(() => {
     initializePlayer();
+    checkFavoriteStatus();
+    checkDownloadStatus();
 
     return () => {
       // Cleanup if needed
     };
   }, []);
+
+  // Check download status periodically
+  useEffect(() => {
+    const downloadStatus = downloadContext.getDownloadStatus(reciter.id, surah.id);
+    const progress = downloadContext.getDownloadProgress(reciter.id, surah.id);
+
+    setIsDownloaded(downloadStatus === 'completed');
+    setDownloadProgress(progress);
+  }, [downloadContext.downloads, downloadContext.downloadProgress]);
 
   useEffect(() => {
     const checkPlaybackState = async () => {
@@ -50,6 +96,30 @@ export default function PlayerScreen() {
 
     return () => clearInterval(interval);
   }, []);
+
+  // Track playback position periodically
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      if (progress.position > 0 && progress.duration > 0) {
+        // Update playback state every 5 seconds
+        await PlaybackStateService.savePlaybackState({
+          currentReciterId: reciter.id,
+          currentSurahId: surah.id,
+          currentPosition: progress.position,
+          isPlaying,
+        });
+
+        // Update position in recently played
+        await PlaybackStateService.updateRecentlyPlayedPosition(
+          reciter.id,
+          surah.id,
+          progress.position,
+        );
+      }
+    }, 5000); // Update every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [progress.position, progress.duration, reciter.id, surah.id, isPlaying]);
 
   const initializePlayer = async () => {
     try {
@@ -81,6 +151,17 @@ export default function PlayerScreen() {
       }
 
       setIsPlaying(true);
+
+      // Track playback in recently played
+      await PlaybackStateService.addToRecentlyPlayed(reciter, surah, 0);
+
+      // Save playback state
+      await PlaybackStateService.savePlaybackState({
+        currentReciterId: reciter.id,
+        currentSurahId: surah.id,
+        currentPosition: 0,
+        isPlaying: true,
+      });
     } catch (error) {
       console.error('Error initializing player:', error);
     } finally {
@@ -100,6 +181,26 @@ export default function PlayerScreen() {
 
   const handleSeek = async (value: number) => {
     await AudioService.seekTo(value);
+  };
+
+  const handleProgressBarSeek = (locationX: number) => {
+    if (progress.duration === 0 || progressBarWidth.current === 0) return;
+
+    // Calculate seek position, ensuring it's within bounds
+    const seekPosition = (locationX / progressBarWidth.current) * progress.duration;
+    const clampedPosition = Math.max(0, Math.min(seekPosition, progress.duration));
+
+    handleSeek(clampedPosition);
+  };
+
+  const handleProgressBarPress = (event: GestureResponderEvent) => {
+    setIsSeeking(true);
+    handleProgressBarSeek(event.nativeEvent.locationX);
+    setTimeout(() => setIsSeeking(false), 300);
+  };
+
+  const handleProgressBarLayout = (event: any) => {
+    progressBarWidth.current = event.nativeEvent.layout.width;
   };
 
   const changeSpeed = async () => {
@@ -152,16 +253,34 @@ export default function PlayerScreen() {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const getRepeatIcon = () => {
-    switch (repeatMode) {
-      case 'off':
-        return '🔁';
-      case 'one':
-        return '🔂';
-      case 'all':
-        return '🔁';
-      default:
-        return '🔁';
+  const checkFavoriteStatus = async () => {
+    const favoriteStatus = await StorageService.isFavorite(reciter.id, surah.id);
+    setIsFavorite(favoriteStatus);
+  };
+
+  const checkDownloadStatus = async () => {
+    const downloaded = await DownloadService.isFileDownloaded(reciter.id, surah.id);
+    setIsDownloaded(downloaded);
+  };
+
+  const handleToggleFavorite = async () => {
+    try {
+      const newStatus = await StorageService.toggleFavorite(reciter.id, surah.id);
+      setIsFavorite(newStatus);
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+    }
+  };
+
+  const handleDownload = async () => {
+    if (isDownloaded) return;
+
+    try {
+      // Use user's preferred quality
+      const preferences = await StorageService.getUserPreferences();
+      await downloadContext.startDownload(reciter, surah, preferences.defaultQuality);
+    } catch (error) {
+      console.error('Error starting download:', error);
     }
   };
 
@@ -174,21 +293,97 @@ export default function PlayerScreen() {
         <Text style={styles.reciterName}>{reciter.nameEnglish}</Text>
       </View>
 
+      {/* Action buttons */}
+      <View style={styles.actionButtons}>
+        <TouchableOpacity
+          style={styles.actionButton}
+          onPress={handleToggleFavorite}
+          hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}>
+          <Icon
+            name={isFavorite ? 'heart' : 'heart-outline'}
+            size={28}
+            color={isFavorite ? '#E74C3C' : COLORS.text}
+            style={styles.actionButtonIcon}
+          />
+          <Text style={styles.actionButtonLabel}>
+            {isFavorite ? 'Favorited' : 'Favorite'}
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.actionButton, isDownloaded && styles.actionButtonDisabled]}
+          onPress={handleDownload}
+          disabled={isDownloaded}
+          hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}>
+          {isDownloaded ? (
+            <>
+              <Icon
+                name="checkmark-circle"
+                size={28}
+                color={COLORS.primary}
+                style={styles.actionButtonIcon}
+              />
+              <Text style={styles.actionButtonLabel}>Downloaded</Text>
+            </>
+          ) : downloadProgress > 0 && downloadProgress < 100 ? (
+            <>
+              <Icon
+                name="download"
+                size={28}
+                color={COLORS.primary}
+                style={styles.actionButtonIcon}
+              />
+              <Text style={styles.actionButtonLabel}>{Math.round(downloadProgress)}%</Text>
+            </>
+          ) : (
+            <>
+              <Icon
+                name="download-outline"
+                size={28}
+                color={COLORS.text}
+                style={styles.actionButtonIcon}
+              />
+              <Text style={styles.actionButtonLabel}>Download</Text>
+            </>
+          )}
+        </TouchableOpacity>
+      </View>
+
       {/* Progress */}
       <View style={styles.progressContainer}>
-        <View style={styles.progressBar}>
-          <View
-            style={[
-              styles.progressFill,
-              {
-                width: `${
-                  progress.duration > 0
-                    ? (progress.position / progress.duration) * 100
-                    : 0
-                }%`,
-              },
-            ]}
-          />
+        <View
+          ref={progressBarRef}
+          style={styles.progressBarContainer}
+          onLayout={handleProgressBarLayout}
+          {...panResponder.panHandlers}>
+          <View style={styles.progressBar}>
+            <View
+              style={[
+                styles.progressFill,
+                {
+                  width: `${
+                    progress.duration > 0
+                      ? (progress.position / progress.duration) * 100
+                      : 0
+                  }%`,
+                },
+              ]}
+            />
+          </View>
+          {/* Seek thumb indicator */}
+          {progress.duration > 0 && (
+            <View
+              style={[
+                styles.progressThumb,
+                {
+                  left: `${
+                    (progress.position / progress.duration) * 100
+                  }%`,
+                },
+                isSeeking && styles.progressThumbActive,
+              ]}
+            />
+          )}
         </View>
         <View style={styles.timeContainer}>
           <Text style={styles.timeText}>{formatTime(progress.position)}</Text>
@@ -201,9 +396,11 @@ export default function PlayerScreen() {
         <TouchableOpacity
           style={styles.modeButton}
           onPress={toggleRepeatMode}>
-          <Text style={[styles.modeIcon, repeatMode !== 'off' && styles.modeIconActive]}>
-            {getRepeatIcon()}
-          </Text>
+          <Icon
+            name={repeatMode === 'one' ? 'repeat-once' : 'repeat'}
+            size={24}
+            color={repeatMode !== 'off' ? COLORS.primary : COLORS.textSecondary}
+          />
           <Text style={[styles.modeLabel, repeatMode !== 'off' && styles.modeLabelActive]}>
             {repeatMode === 'one' ? 'One' : repeatMode === 'all' ? 'All' : 'Off'}
           </Text>
@@ -212,16 +409,22 @@ export default function PlayerScreen() {
         <TouchableOpacity
           style={styles.modeButton}
           onPress={changeSpeed}>
-          <Text style={styles.modeIcon}>⚡</Text>
+          <Icon
+            name="speedometer-outline"
+            size={24}
+            color={COLORS.textSecondary}
+          />
           <Text style={styles.modeLabel}>{playbackSpeed}x</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.modeButton}
           onPress={toggleShuffle}>
-          <Text style={[styles.modeIcon, isShuffleEnabled && styles.modeIconActive]}>
-            🔀
-          </Text>
+          <Icon
+            name="shuffle"
+            size={24}
+            color={isShuffleEnabled ? COLORS.primary : COLORS.textSecondary}
+          />
           <Text style={[styles.modeLabel, isShuffleEnabled && styles.modeLabelActive]}>
             Shuffle
           </Text>
@@ -233,7 +436,7 @@ export default function PlayerScreen() {
         <TouchableOpacity
           style={styles.controlButton}
           onPress={handleSkipPrevious}>
-          <Text style={styles.controlIcon}>⏮</Text>
+          <Icon name="play-skip-back" size={28} color={COLORS.primary} />
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -243,16 +446,18 @@ export default function PlayerScreen() {
           {isLoading ? (
             <ActivityIndicator size="large" color={COLORS.white} />
           ) : (
-            <Text style={styles.playButtonText}>
-              {isPlaying ? '⏸' : '▶'}
-            </Text>
+            <Icon
+              name={isPlaying ? 'pause' : 'play'}
+              size={36}
+              color={COLORS.white}
+            />
           )}
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.controlButton}
           onPress={handleSkipNext}>
-          <Text style={styles.controlIcon}>⏭</Text>
+          <Icon name="play-skip-forward" size={28} color={COLORS.primary} />
         </TouchableOpacity>
       </View>
 
@@ -295,8 +500,38 @@ const styles = StyleSheet.create({
     fontSize: DIMENSIONS.fontSize.lg,
     color: COLORS.textSecondary,
   },
+  actionButtons: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: DIMENSIONS.spacing.xl,
+    marginTop: DIMENSIONS.spacing.lg,
+    marginBottom: DIMENSIONS.spacing.md,
+  },
+  actionButton: {
+    alignItems: 'center',
+    paddingVertical: DIMENSIONS.spacing.sm,
+    paddingHorizontal: DIMENSIONS.spacing.md,
+    minWidth: 100,
+  },
+  actionButtonDisabled: {
+    opacity: 0.5,
+  },
+  actionButtonIcon: {
+    marginBottom: DIMENSIONS.spacing.xs / 2,
+  },
+  actionButtonLabel: {
+    fontSize: DIMENSIONS.fontSize.sm,
+    color: COLORS.text,
+    fontWeight: '500',
+  },
   progressContainer: {
     marginVertical: DIMENSIONS.spacing.xl,
+  },
+  progressBarContainer: {
+    paddingVertical: DIMENSIONS.spacing.md, // Increase touch area
+    marginVertical: -DIMENSIONS.spacing.md,
+    position: 'relative',
   },
   progressBar: {
     height: 4,
@@ -305,8 +540,32 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   progressFill: {
-    height: '100%',
+    height: 4,
     backgroundColor: COLORS.primary,
+    borderRadius: DIMENSIONS.borderRadius.sm,
+  },
+  progressThumb: {
+    position: 'absolute',
+    top: '50%',
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: COLORS.primary,
+    marginLeft: -6,
+    marginTop: -4,
+    borderWidth: 2,
+    borderColor: COLORS.white,
+    shadowColor: COLORS.black,
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 4,
+  },
+  progressThumbActive: {
+    transform: [{scale: 1.3}],
+    shadowOpacity: 0.4,
+    shadowRadius: 5,
+    elevation: 6,
   },
   timeContainer: {
     flexDirection: 'row',
@@ -327,14 +586,6 @@ const styles = StyleSheet.create({
   modeButton: {
     alignItems: 'center',
     padding: DIMENSIONS.spacing.sm,
-  },
-  modeIcon: {
-    fontSize: 24,
-    marginBottom: DIMENSIONS.spacing.xs / 2,
-    opacity: 0.5,
-  },
-  modeIconActive: {
-    opacity: 1,
   },
   modeLabel: {
     fontSize: DIMENSIONS.fontSize.xs,
@@ -364,10 +615,6 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
-  controlIcon: {
-    fontSize: 24,
-    color: COLORS.primary,
-  },
   playButton: {
     width: 80,
     height: 80,
@@ -380,10 +627,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 8,
-  },
-  playButtonText: {
-    fontSize: 32,
-    color: COLORS.white,
   },
   infoContainer: {
     alignItems: 'center',
