@@ -108,5 +108,5 @@ export type RootStackParamList = {
   Library: undefined;
   Settings: undefined;
   ReciterDetail: {reciterId: string};
-  Player: {reciterId: string; surahId: number};
+  Player: {reciter: Reciter; surah: Surah};
 };

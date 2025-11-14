@@ -1,19 +1,38 @@
 import React from 'react';
-import {View, Text, StyleSheet, FlatList} from 'react-native';
+import {View, Text, StyleSheet, FlatList, TouchableOpacity} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {COLORS, DIMENSIONS} from '../utils/constants';
 import recitersData from '../data/reciters.json';
-import {Reciter} from '../utils/types';
+import surahsData from '../data/surahs.json';
+import {Reciter, Surah, RootStackParamList} from '../utils/types';
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 export default function RecitersScreen() {
+  const navigation = useNavigation<NavigationProp>();
   const reciters = recitersData as Reciter[];
+  const surahs = surahsData as Surah[];
+
+  const handleReciterPress = (reciter: Reciter) => {
+    // For now, play the first surah (Al-Fatihah)
+    const firstSurah = surahs[0];
+    if (firstSurah) {
+      navigation.navigate('Player', {reciter, surah: firstSurah});
+    }
+  };
 
   const renderReciter = ({item}: {item: Reciter}) => (
-    <View style={styles.reciterCard}>
+    <TouchableOpacity
+      style={styles.reciterCard}
+      onPress={() => handleReciterPress(item)}
+      activeOpacity={0.7}>
       <Text style={styles.reciterName}>{item.nameEnglish}</Text>
       <Text style={styles.reciterNameArabic}>{item.nameArabic}</Text>
       <Text style={styles.reciterStyle}>{item.style}</Text>
       <Text style={styles.reciterCountry}>{item.country}</Text>
-    </View>
+      <Text style={styles.tapHint}>Tap to play Al-Fatihah</Text>
+    </TouchableOpacity>
   );
 
   return (
@@ -82,5 +101,11 @@ const styles = StyleSheet.create({
   reciterCountry: {
     fontSize: DIMENSIONS.fontSize.sm,
     color: COLORS.textLight,
+  },
+  tapHint: {
+    fontSize: DIMENSIONS.fontSize.xs,
+    color: COLORS.accent,
+    marginTop: DIMENSIONS.spacing.sm,
+    fontStyle: 'italic',
   },
 });
