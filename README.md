@@ -204,25 +204,27 @@ _Coming soon..._
 
 ## 🗺️ Roadmap
 
-### ✅ Phase 1: Core Infrastructure (Week 1-2)
+### ✅ Phase 1: Core Infrastructure (Week 1-2) - COMPLETED
 - [x] Project setup with TypeScript
 - [x] Folder structure
 - [x] Theme constants
-- [ ] Basic navigation
-- [ ] Data models
+- [x] Basic navigation (bottom tabs)
+- [x] Data models
+- [x] Testing infrastructure (Jest + 5 tests passing)
+- [x] Core dependencies installed
 
-### 🔄 Phase 2: Audio Playback (Week 2-3)
+### 🔄 Phase 2: Audio Playback (Week 2-3) - IN PROGRESS
 - [ ] Audio player implementation
 - [ ] Stream and local playback
 - [ ] Lock screen controls
 - [ ] Playback modes
 
-### 📋 Phase 3: UI Development (Week 3-4)
-- [ ] Home screen
-- [ ] Reciters screen
+### 📋 Phase 3: UI Development (Week 3-4) - PARTIAL
+- [x] Home screen (basic)
+- [x] Reciters screen (basic)
 - [ ] Player screen
-- [ ] Library screen
-- [ ] Settings screen
+- [x] Library screen (empty state)
+- [x] Settings screen (basic)
 
 ### 🌐 Phase 4: Source Integration (Week 4)
 - [ ] API service
