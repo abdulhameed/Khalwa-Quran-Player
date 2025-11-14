@@ -213,34 +213,42 @@ _Coming soon..._
 - [x] Testing infrastructure (Jest + 5 tests passing)
 - [x] Core dependencies installed
 
-### 🔄 Phase 2: Audio Playback (Week 2-3) - IN PROGRESS
-- [ ] Audio player implementation
-- [ ] Stream and local playback
-- [ ] Lock screen controls
-- [ ] Playback modes
+### ✅ Phase 2: Audio Playback (Week 2-3) - COMPLETED
+- [x] Audio player implementation
+- [x] Stream and local playback
+- [x] Lock screen controls
+- [x] Playback modes (repeat, shuffle, speed control)
+- [x] Skip next/previous controls
+- [x] Progress tracking and seeking
+- [x] Background playback service
+- [x] 24 AudioService tests passing
 
-### 📋 Phase 3: UI Development (Week 3-4) - PARTIAL
+### 📋 Phase 3: UI Development (Week 3-4) - COMPLETED
 - [x] Home screen (basic)
-- [x] Reciters screen (basic)
-- [ ] Player screen
-- [x] Library screen (empty state)
+- [x] Reciters screen
+- [x] Player screen (full controls)
+- [x] Library screen (with downloaded content)
 - [x] Settings screen (basic)
+- [x] Surahs screen with download options
 
-### 🌐 Phase 4: Source Integration (Week 4)
-- [ ] API service
-- [ ] Source adapters
-- [ ] Streaming implementation
+### ✅ Phase 4: Source Integration (Week 4) - COMPLETED
+- [x] API service
+- [x] Source adapters (EveryAyah, MP3Quran, QuranicAudio)
+- [x] Streaming implementation
 
-### 📥 Phase 5: Download System (Week 5-6)
-- [ ] Download service
-- [ ] Queue management
-- [ ] Batch downloads
-- [ ] WiFi-only option
+### ✅ Phase 5: Download System (Week 5-6) - COMPLETED
+- [x] Download service
+- [x] Queue management
+- [x] Batch downloads (multi-select, download all)
+- [x] WiFi-only option
+- [x] Per-surah downloads with quality selection
+- [x] Progress tracking and status indicators
+- [x] 16 Download tests passing
 
-### 📚 Phase 6: Library & Storage (Week 6-7)
-- [ ] Library implementation
-- [ ] Favorites system
-- [ ] Storage management
+### ✅ Phase 6: Library & Storage (Week 6-7) - COMPLETED
+- [x] Library implementation (view downloaded content)
+- [x] Storage management (AsyncStorage + react-native-fs)
+- [x] Download metadata persistence
 
 ### 🎨 Phase 7: Polish & Design (Week 7-8)
 - [ ] Visual design implementation

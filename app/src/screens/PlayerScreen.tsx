@@ -12,6 +12,7 @@ import {COLORS, DIMENSIONS} from '../utils/constants';
 import {Surah, Reciter} from '../utils/types';
 import * as AudioService from '../services/AudioService';
 import {buildAudioUrl} from '../services/ApiService';
+import * as DownloadService from '../services/DownloadService';
 
 type PlayerScreenRouteProp = RouteProp<
   {Player: {surah: Surah; reciter: Reciter}},
@@ -26,6 +27,8 @@ export default function PlayerScreen() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [playbackSpeed, setPlaybackSpeed] = useState(1.0);
+  const [repeatMode, setRepeatMode] = useState<'off' | 'one' | 'all'>('off');
+  const [isShuffleEnabled, setIsShuffleEnabled] = useState(false);
 
   useEffect(() => {
     initializePlayer();
@@ -51,8 +54,21 @@ export default function PlayerScreen() {
   const initializePlayer = async () => {
     try {
       setIsLoading(true);
-      const url = buildAudioUrl(reciter, surah);
-      console.log('Playing URL:', url);
+
+      // Check if file is downloaded locally
+      const localPath = await DownloadService.getDownloadedFilePath(reciter.id, surah.id);
+
+      let url: string;
+      if (localPath) {
+        // Play from local storage
+        url = `file://${localPath}`;
+        console.log('Playing from local storage:', url);
+      } else {
+        // Stream from online source
+        url = buildAudioUrl(reciter, surah);
+        console.log('Streaming URL:', url);
+      }
+
       await AudioService.playSurah(surah, reciter, url);
       setIsPlaying(true);
     } catch (error) {
@@ -86,10 +102,57 @@ export default function PlayerScreen() {
     setPlaybackSpeed(newSpeed);
   };
 
+  const toggleRepeatMode = async () => {
+    const modes: Array<'off' | 'one' | 'all'> = ['off', 'one', 'all'];
+    const currentIndex = modes.indexOf(repeatMode);
+    const nextIndex = (currentIndex + 1) % modes.length;
+    const newMode = modes[nextIndex];
+
+    await AudioService.setRepeatMode(newMode);
+    setRepeatMode(newMode);
+  };
+
+  const toggleShuffle = async () => {
+    const newShuffleState = !isShuffleEnabled;
+    setIsShuffleEnabled(newShuffleState);
+    if (newShuffleState) {
+      await AudioService.enableShuffle();
+    }
+  };
+
+  const handleSkipNext = async () => {
+    try {
+      await AudioService.skipToNext();
+    } catch (error) {
+      console.log('No next track');
+    }
+  };
+
+  const handleSkipPrevious = async () => {
+    try {
+      await AudioService.skipToPrevious();
+    } catch (error) {
+      console.log('No previous track');
+    }
+  };
+
   const formatTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const getRepeatIcon = () => {
+    switch (repeatMode) {
+      case 'off':
+        return '🔁';
+      case 'one':
+        return '🔂';
+      case 'all':
+        return '🔁';
+      default:
+        return '🔁';
+    }
   };
 
   return (
@@ -123,12 +186,44 @@ export default function PlayerScreen() {
         </View>
       </View>
 
-      {/* Controls */}
+      {/* Playback Mode Controls */}
+      <View style={styles.modesContainer}>
+        <TouchableOpacity
+          style={styles.modeButton}
+          onPress={toggleRepeatMode}>
+          <Text style={[styles.modeIcon, repeatMode !== 'off' && styles.modeIconActive]}>
+            {getRepeatIcon()}
+          </Text>
+          <Text style={[styles.modeLabel, repeatMode !== 'off' && styles.modeLabelActive]}>
+            {repeatMode === 'one' ? 'One' : repeatMode === 'all' ? 'All' : 'Off'}
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.modeButton}
+          onPress={changeSpeed}>
+          <Text style={styles.modeIcon}>⚡</Text>
+          <Text style={styles.modeLabel}>{playbackSpeed}x</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.modeButton}
+          onPress={toggleShuffle}>
+          <Text style={[styles.modeIcon, isShuffleEnabled && styles.modeIconActive]}>
+            🔀
+          </Text>
+          <Text style={[styles.modeLabel, isShuffleEnabled && styles.modeLabelActive]}>
+            Shuffle
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Main Controls */}
       <View style={styles.controls}>
         <TouchableOpacity
-          style={styles.speedButton}
-          onPress={changeSpeed}>
-          <Text style={styles.speedText}>{playbackSpeed}x</Text>
+          style={styles.controlButton}
+          onPress={handleSkipPrevious}>
+          <Text style={styles.controlIcon}>⏮</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -142,6 +237,12 @@ export default function PlayerScreen() {
               {isPlaying ? '⏸' : '▶'}
             </Text>
           )}
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.controlButton}
+          onPress={handleSkipNext}>
+          <Text style={styles.controlIcon}>⏭</Text>
         </TouchableOpacity>
       </View>
 
@@ -206,28 +307,56 @@ const styles = StyleSheet.create({
     fontSize: DIMENSIONS.fontSize.sm,
     color: COLORS.textSecondary,
   },
+  modesContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    marginVertical: DIMENSIONS.spacing.lg,
+    paddingHorizontal: DIMENSIONS.spacing.xl,
+  },
+  modeButton: {
+    alignItems: 'center',
+    padding: DIMENSIONS.spacing.sm,
+  },
+  modeIcon: {
+    fontSize: 24,
+    marginBottom: DIMENSIONS.spacing.xs / 2,
+    opacity: 0.5,
+  },
+  modeIconActive: {
+    opacity: 1,
+  },
+  modeLabel: {
+    fontSize: DIMENSIONS.fontSize.xs,
+    color: COLORS.textSecondary,
+  },
+  modeLabelActive: {
+    color: COLORS.primary,
+    fontWeight: '600',
+  },
   controls: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     marginVertical: DIMENSIONS.spacing.xl,
+    gap: DIMENSIONS.spacing.xl,
   },
-  speedButton: {
-    position: 'absolute',
-    left: DIMENSIONS.spacing.xl,
-    padding: DIMENSIONS.spacing.md,
+  controlButton: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     backgroundColor: COLORS.white,
-    borderRadius: DIMENSIONS.borderRadius.lg,
+    justifyContent: 'center',
+    alignItems: 'center',
     shadowColor: COLORS.black,
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
   },
-  speedText: {
-    fontSize: DIMENSIONS.fontSize.md,
+  controlIcon: {
+    fontSize: 24,
     color: COLORS.primary,
-    fontWeight: '600',
   },
   playButton: {
     width: 80,
