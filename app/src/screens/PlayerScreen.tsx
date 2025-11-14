@@ -17,6 +17,7 @@ import {Surah, Reciter} from '../utils/types';
 import * as AudioService from '../services/AudioService';
 import {buildAudioUrl, buildAyahUrls, isFullSurahSource} from '../services/ApiService';
 import * as DownloadService from '../services/DownloadService';
+import * as PlaybackStateService from '../services/PlaybackStateService';
 
 type PlayerScreenRouteProp = RouteProp<
   {Player: {surah: Surah; reciter: Reciter}},
@@ -77,6 +78,30 @@ export default function PlayerScreen() {
     return () => clearInterval(interval);
   }, []);
 
+  // Track playback position periodically
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      if (progress.position > 0 && progress.duration > 0) {
+        // Update playback state every 5 seconds
+        await PlaybackStateService.savePlaybackState({
+          currentReciterId: reciter.id,
+          currentSurahId: surah.id,
+          currentPosition: progress.position,
+          isPlaying,
+        });
+
+        // Update position in recently played
+        await PlaybackStateService.updateRecentlyPlayedPosition(
+          reciter.id,
+          surah.id,
+          progress.position,
+        );
+      }
+    }, 5000); // Update every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [progress.position, progress.duration, reciter.id, surah.id, isPlaying]);
+
   const initializePlayer = async () => {
     try {
       setIsLoading(true);
@@ -107,6 +132,17 @@ export default function PlayerScreen() {
       }
 
       setIsPlaying(true);
+
+      // Track playback in recently played
+      await PlaybackStateService.addToRecentlyPlayed(reciter, surah, 0);
+
+      // Save playback state
+      await PlaybackStateService.savePlaybackState({
+        currentReciterId: reciter.id,
+        currentSurahId: surah.id,
+        currentPosition: 0,
+        isPlaying: true,
+      });
     } catch (error) {
       console.error('Error initializing player:', error);
     } finally {

@@ -68,6 +68,9 @@ export const buildTrack = (
     reciterId: reciter.id,
     surahNameArabic: surah.nameArabic,
     reciterNameArabic: reciter.nameArabic,
+    // Store full objects for navigation
+    surah,
+    reciter,
   };
 };
 

@@ -1,6 +1,8 @@
 import React from 'react';
+import {View, StyleSheet} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {useNavigationState} from '@react-navigation/native';
 import {COLORS, DIMENSIONS} from '../utils/constants';
 
 // Screens
@@ -10,6 +12,9 @@ import LibraryScreen from '../screens/LibraryScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import PlayerScreen from '../screens/PlayerScreen';
 import {SurahsScreen} from '../screens/SurahsScreen';
+
+// Components
+import MiniPlayer from '../components/MiniPlayer';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -67,42 +72,60 @@ function TabNavigator() {
 }
 
 export default function MainNavigator() {
+  // Get current route name to hide mini player on Player screen
+  const currentRouteName = useNavigationState(state => {
+    if (!state) return undefined;
+    const route = state.routes[state.index];
+    return route.name;
+  });
+
+  const showMiniPlayer = currentRouteName !== 'Player';
+
   return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}>
-      <Stack.Screen name="MainTabs" component={TabNavigator} />
-      <Stack.Screen
-        name="Surahs"
-        component={SurahsScreen}
-        options={{
-          headerShown: true,
-          headerTitle: 'Select Surah',
-          headerStyle: {
-            backgroundColor: COLORS.primary,
-          },
-          headerTintColor: COLORS.white,
-          headerTitleStyle: {
-            fontWeight: '600',
-          },
-        }}
-      />
-      <Stack.Screen
-        name="Player"
-        component={PlayerScreen}
-        options={{
-          headerShown: true,
-          headerTitle: 'Now Playing',
-          headerStyle: {
-            backgroundColor: COLORS.primary,
-          },
-          headerTintColor: COLORS.white,
-          headerTitleStyle: {
-            fontWeight: '600',
-          },
-        }}
-      />
-    </Stack.Navigator>
+    <View style={styles.container}>
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+        }}>
+        <Stack.Screen name="MainTabs" component={TabNavigator} />
+        <Stack.Screen
+          name="Surahs"
+          component={SurahsScreen}
+          options={{
+            headerShown: true,
+            headerTitle: 'Select Surah',
+            headerStyle: {
+              backgroundColor: COLORS.primary,
+            },
+            headerTintColor: COLORS.white,
+            headerTitleStyle: {
+              fontWeight: '600',
+            },
+          }}
+        />
+        <Stack.Screen
+          name="Player"
+          component={PlayerScreen}
+          options={{
+            headerShown: true,
+            headerTitle: 'Now Playing',
+            headerStyle: {
+              backgroundColor: COLORS.primary,
+            },
+            headerTintColor: COLORS.white,
+            headerTitleStyle: {
+              fontWeight: '600',
+            },
+          }}
+        />
+      </Stack.Navigator>
+      {showMiniPlayer && <MiniPlayer />}
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});
