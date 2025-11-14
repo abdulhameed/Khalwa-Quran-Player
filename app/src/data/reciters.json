@@ -3,8 +3,8 @@
     "id": "abdul-basit",
     "nameArabic": "عبد الباسط عبد الصمد",
     "nameEnglish": "Abdul Basit Abdul Samad",
-    "photo": "",
-    "bio": "One of the most renowned Quran reciters, known for his powerful and emotional recitation.",
+    "photo": "https://i.pravatar.cc/150?img=1",
+    "bio": "One of the most renowned Quran reciters, known for his powerful and emotional recitation. His style has influenced generations of reciters.",
     "style": "Murattal",
     "country": "Egypt",
     "sources": [
@@ -20,8 +20,8 @@
     "id": "mishary-alafasy",
     "nameArabic": "مشاري بن راشد العفاسي",
     "nameEnglish": "Mishary Rashid Alafasy",
-    "photo": "",
-    "bio": "Popular Kuwaiti Quran reciter with a beautiful and clear voice.",
+    "photo": "https://i.pravatar.cc/150?img=2",
+    "bio": "Popular Kuwaiti Quran reciter with a beautiful and clear voice. Known for his melodious recitation style.",
     "style": "Murattal",
     "country": "Kuwait",
     "sources": [
@@ -29,6 +29,312 @@
         "sourceId": "everyayah",
         "sourceName": "EveryAyah.com",
         "baseUrl": "https://everyayah.com/data/Alafasy_128kbps",
+        "qualities": ["medium"]
+      }
+    ]
+  },
+  {
+    "id": "saad-al-ghamdi",
+    "nameArabic": "سعد الغامدي",
+    "nameEnglish": "Saad Al-Ghamdi",
+    "photo": "https://i.pravatar.cc/150?img=3",
+    "bio": "Saudi Arabian reciter known for his soothing and rhythmic recitation. One of the most listened-to reciters worldwide.",
+    "style": "Murattal",
+    "country": "Saudi Arabia",
+    "sources": [
+      {
+        "sourceId": "everyayah",
+        "sourceName": "EveryAyah.com",
+        "baseUrl": "https://everyayah.com/data/Ghamadi_40kbps",
+        "qualities": ["medium"]
+      }
+    ]
+  },
+  {
+    "id": "sudais",
+    "nameArabic": "عبد الرحمن السديس",
+    "nameEnglish": "Abdul Rahman Al-Sudais",
+    "photo": "https://i.pravatar.cc/150?img=4",
+    "bio": "Imam of the Grand Mosque in Makkah. Known for his exceptional voice and emotional recitation during Taraweeh prayers.",
+    "style": "Murattal",
+    "country": "Saudi Arabia",
+    "sources": [
+      {
+        "sourceId": "everyayah",
+        "sourceName": "EveryAyah.com",
+        "baseUrl": "https://everyayah.com/data/Abdurrahmaan_As-Sudais_192kbps",
+        "qualities": ["high"]
+      }
+    ]
+  },
+  {
+    "id": "nasser-alqatami",
+    "nameArabic": "ناصر القطامي",
+    "nameEnglish": "Nasser Al-Qatami",
+    "photo": "https://i.pravatar.cc/150?img=5",
+    "bio": "Saudi reciter with a distinctive and powerful voice. Known for his precise Tajweed and emotional delivery.",
+    "style": "Murattal",
+    "country": "Saudi Arabia",
+    "sources": [
+      {
+        "sourceId": "everyayah",
+        "sourceName": "EveryAyah.com",
+        "baseUrl": "https://everyayah.com/data/Nasser_Alqatami_128kbps",
+        "qualities": ["medium"]
+      }
+    ]
+  },
+  {
+    "id": "maher-al-muaiqly",
+    "nameArabic": "ماهر المعيقلي",
+    "nameEnglish": "Maher Al-Muaiqly",
+    "photo": "https://i.pravatar.cc/150?img=6",
+    "bio": "Imam of the Grand Mosque in Makkah. Recognized for his beautiful voice and heartfelt recitation.",
+    "style": "Murattal",
+    "country": "Saudi Arabia",
+    "sources": [
+      {
+        "sourceId": "everyayah",
+        "sourceName": "EveryAyah.com",
+        "baseUrl": "https://everyayah.com/data/Maher_AlMuaiqly_64kbps",
+        "qualities": ["medium"]
+      }
+    ]
+  },
+  {
+    "id": "ahmed-ajmy",
+    "nameArabic": "أحمد العجمي",
+    "nameEnglish": "Ahmed Al-Ajmy",
+    "photo": "https://i.pravatar.cc/150?img=7",
+    "bio": "Saudi reciter known for his clear and methodical recitation. Popular for memorization and learning.",
+    "style": "Murattal",
+    "country": "Saudi Arabia",
+    "sources": [
+      {
+        "sourceId": "everyayah",
+        "sourceName": "EveryAyah.com",
+        "baseUrl": "https://everyayah.com/data/Ahmed_ibn_Ali_al-Ajamy_128kbps-ketaballah.net",
+        "qualities": ["medium"]
+      }
+    ]
+  },
+  {
+    "id": "saud-al-shuraim",
+    "nameArabic": "سعود الشريم",
+    "nameEnglish": "Saud Al-Shuraim",
+    "photo": "https://i.pravatar.cc/150?img=8",
+    "bio": "Former Imam of the Grand Mosque in Makkah. Known for his strong and commanding recitation.",
+    "style": "Murattal",
+    "country": "Saudi Arabia",
+    "sources": [
+      {
+        "sourceId": "everyayah",
+        "sourceName": "EveryAyah.com",
+        "baseUrl": "https://everyayah.com/data/Saud_ash-Shuraym_128kbps",
+        "qualities": ["medium"]
+      }
+    ]
+  },
+  {
+    "id": "muhammad-ayyub",
+    "nameArabic": "محمد أيوب",
+    "nameEnglish": "Muhammad Ayyub",
+    "photo": "https://i.pravatar.cc/150?img=9",
+    "bio": "Former Imam of the Prophet's Mosque in Madinah. Beloved for his tender and moving recitation.",
+    "style": "Murattal",
+    "country": "Saudi Arabia",
+    "sources": [
+      {
+        "sourceId": "everyayah",
+        "sourceName": "EveryAyah.com",
+        "baseUrl": "https://everyayah.com/data/Muhammad_Ayyoub_128kbps",
+        "qualities": ["medium"]
+      }
+    ]
+  },
+  {
+    "id": "abdullah-basfar",
+    "nameArabic": "عبد الله بصفر",
+    "nameEnglish": "Abdullah Basfar",
+    "photo": "https://i.pravatar.cc/150?img=10",
+    "bio": "Saudi reciter with a unique and melodious voice. Popular among youth for his modern style.",
+    "style": "Murattal",
+    "country": "Saudi Arabia",
+    "sources": [
+      {
+        "sourceId": "everyayah",
+        "sourceName": "EveryAyah.com",
+        "baseUrl": "https://everyayah.com/data/Abdullah_Basfar_192kbps",
+        "qualities": ["high"]
+      }
+    ]
+  },
+  {
+    "id": "yasser-al-dosari",
+    "nameArabic": "ياسر الدوسري",
+    "nameEnglish": "Yasser Al-Dosari",
+    "photo": "https://i.pravatar.cc/150?img=11",
+    "bio": "Young Saudi reciter with exceptional Tajweed. Known for his emotional and heartfelt recitation.",
+    "style": "Murattal",
+    "country": "Saudi Arabia",
+    "sources": [
+      {
+        "sourceId": "everyayah",
+        "sourceName": "EveryAyah.com",
+        "baseUrl": "https://everyayah.com/data/Yasser_Ad-Dussary_128kbps",
+        "qualities": ["medium"]
+      }
+    ]
+  },
+  {
+    "id": "bandar-baleela",
+    "nameArabic": "بندر بليلة",
+    "nameEnglish": "Bandar Baleela",
+    "photo": "https://i.pravatar.cc/150?img=12",
+    "bio": "Imam of the Grand Mosque in Makkah. Known for his emotional recitation during Ramadan prayers.",
+    "style": "Murattal",
+    "country": "Saudi Arabia",
+    "sources": [
+      {
+        "sourceId": "everyayah",
+        "sourceName": "EveryAyah.com",
+        "baseUrl": "https://everyayah.com/data/Bandar_Balila_64kbps",
+        "qualities": ["medium"]
+      }
+    ]
+  },
+  {
+    "id": "husary",
+    "nameArabic": "محمود خليل الحصري",
+    "nameEnglish": "Mahmoud Khalil Al-Husary",
+    "photo": "https://i.pravatar.cc/150?img=13",
+    "bio": "Legendary Egyptian reciter known for his precise Tajweed. His recordings are used worldwide for teaching proper recitation.",
+    "style": "Murattal",
+    "country": "Egypt",
+    "sources": [
+      {
+        "sourceId": "everyayah",
+        "sourceName": "EveryAyah.com",
+        "baseUrl": "https://everyayah.com/data/Husary_128kbps",
+        "qualities": ["medium"]
+      }
+    ]
+  },
+  {
+    "id": "minshawi",
+    "nameArabic": "محمد صديق المنشاوي",
+    "nameEnglish": "Muhammad Siddiq Al-Minshawi",
+    "photo": "https://i.pravatar.cc/150?img=14",
+    "bio": "One of the most famous Egyptian reciters of all time. Known for his Mujawwad style and exceptional voice.",
+    "style": "Mujawwad",
+    "country": "Egypt",
+    "sources": [
+      {
+        "sourceId": "everyayah",
+        "sourceName": "EveryAyah.com",
+        "baseUrl": "https://everyayah.com/data/Minshawy_Murattal_128kbps",
+        "qualities": ["medium"]
+      }
+    ]
+  },
+  {
+    "id": "hani-rifai",
+    "nameArabic": "هاني الرفاعي",
+    "nameEnglish": "Hani Ar-Rifai",
+    "photo": "https://i.pravatar.cc/150?img=15",
+    "bio": "Saudi reciter with a calm and soothing voice. Popular for night prayers and relaxation.",
+    "style": "Murattal",
+    "country": "Saudi Arabia",
+    "sources": [
+      {
+        "sourceId": "everyayah",
+        "sourceName": "EveryAyah.com",
+        "baseUrl": "https://everyayah.com/data/Hani_Rifai_192kbps",
+        "qualities": ["high"]
+      }
+    ]
+  },
+  {
+    "id": "abdullah-awad-al-juhani",
+    "nameArabic": "عبد الله عواد الجهني",
+    "nameEnglish": "Abdullah Awad Al-Juhani",
+    "photo": "https://i.pravatar.cc/150?img=16",
+    "bio": "Imam of the Prophet's Mosque in Madinah. Known for his beautiful and touching recitation.",
+    "style": "Murattal",
+    "country": "Saudi Arabia",
+    "sources": [
+      {
+        "sourceId": "everyayah",
+        "sourceName": "EveryAyah.com",
+        "baseUrl": "https://everyayah.com/data/Abdullah_Awad_Al-Juhani_128kbps",
+        "qualities": ["medium"]
+      }
+    ]
+  },
+  {
+    "id": "khalid-al-qahtani",
+    "nameArabic": "خالد القحطاني",
+    "nameEnglish": "Khalid Al-Qahtani",
+    "photo": "https://i.pravatar.cc/150?img=17",
+    "bio": "Saudi reciter known for his powerful voice and emotional delivery during Taraweeh prayers.",
+    "style": "Murattal",
+    "country": "Saudi Arabia",
+    "sources": [
+      {
+        "sourceId": "everyayah",
+        "sourceName": "EveryAyah.com",
+        "baseUrl": "https://everyayah.com/data/Khalid_AlQahtani_192kbps",
+        "qualities": ["high"]
+      }
+    ]
+  },
+  {
+    "id": "salah-budair",
+    "nameArabic": "صلاح البدير",
+    "nameEnglish": "Salah Budair",
+    "photo": "https://i.pravatar.cc/150?img=18",
+    "bio": "Imam of the Prophet's Mosque in Madinah. Recognized for his distinctive voice and precise recitation.",
+    "style": "Murattal",
+    "country": "Saudi Arabia",
+    "sources": [
+      {
+        "sourceId": "everyayah",
+        "sourceName": "EveryAyah.com",
+        "baseUrl": "https://everyayah.com/data/Salah_Al_Budair_128kbps",
+        "qualities": ["medium"]
+      }
+    ]
+  },
+  {
+    "id": "abu-bakr-al-shatri",
+    "nameArabic": "أبو بكر الشاطري",
+    "nameEnglish": "Abu Bakr Al-Shatri",
+    "photo": "https://i.pravatar.cc/150?img=19",
+    "bio": "Yemeni reciter known for his clear and melodious voice. Popular for memorization purposes.",
+    "style": "Murattal",
+    "country": "Yemen",
+    "sources": [
+      {
+        "sourceId": "everyayah",
+        "sourceName": "EveryAyah.com",
+        "baseUrl": "https://everyayah.com/data/Abu_Bakr_Ash-Shaatree_128kbps",
+        "qualities": ["medium"]
+      }
+    ]
+  },
+  {
+    "id": "ali-jaber",
+    "nameArabic": "علي جابر",
+    "nameEnglish": "Ali Jaber",
+    "photo": "https://i.pravatar.cc/150?img=20",
+    "bio": "Saudi reciter and former Imam of the Grand Mosque in Makkah. Known for his beautiful and emotional recitation.",
+    "style": "Murattal",
+    "country": "Saudi Arabia",
+    "sources": [
+      {
+        "sourceId": "everyayah",
+        "sourceName": "EveryAyah.com",
+        "baseUrl": "https://everyayah.com/data/Ali_Jaber_64kbps",
         "qualities": ["medium"]
       }
     ]
