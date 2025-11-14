@@ -11,7 +11,7 @@ import TrackPlayer, {useProgress, State} from 'react-native-track-player';
 import {COLORS, DIMENSIONS} from '../utils/constants';
 import {Surah, Reciter} from '../utils/types';
 import * as AudioService from '../services/AudioService';
-import {buildAudioUrl} from '../services/ApiService';
+import {buildAudioUrl, buildAyahUrls, isFullSurahSource} from '../services/ApiService';
 import * as DownloadService from '../services/DownloadService';
 
 type PlayerScreenRouteProp = RouteProp<
@@ -58,18 +58,28 @@ export default function PlayerScreen() {
       // Check if file is downloaded locally
       const localPath = await DownloadService.getDownloadedFilePath(reciter.id, surah.id);
 
-      let url: string;
       if (localPath) {
-        // Play from local storage
-        url = `file://${localPath}`;
+        // Play from local storage (assuming local files are full surah)
+        const url = `file://${localPath}`;
         console.log('Playing from local storage:', url);
+        await AudioService.playSurah(surah, reciter, url);
       } else {
         // Stream from online source
-        url = buildAudioUrl(reciter, surah);
-        console.log('Streaming URL:', url);
+        const source = reciter.sources[0];
+
+        if (source && isFullSurahSource(source.sourceId)) {
+          // Source provides full surah files
+          const url = buildAudioUrl(reciter, surah);
+          console.log('Streaming full surah URL:', url);
+          await AudioService.playSurah(surah, reciter, url);
+        } else {
+          // Source provides per-ayah files, build playlist
+          const urls = buildAyahUrls(reciter, surah);
+          console.log(`Streaming ${urls.length} ayahs for full surah`);
+          await AudioService.playSurahFull(surah, reciter, urls);
+        }
       }
 
-      await AudioService.playSurah(surah, reciter, url);
       setIsPlaying(true);
     } catch (error) {
       console.error('Error initializing player:', error);
