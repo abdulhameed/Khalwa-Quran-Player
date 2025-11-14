@@ -14,24 +14,30 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import MainNavigator from './src/navigation/MainNavigator';
 import {COLORS} from './src/utils/constants';
 import {setupPlayer} from './src/services/AudioService';
+import {initializeDownloadService} from './src/services/DownloadService';
 import {DownloadProvider} from './src/contexts/DownloadContext';
 
 function App() {
   const [isPlayerReady, setIsPlayerReady] = useState(false);
 
   useEffect(() => {
-    const initializePlayer = async () => {
+    const initializeApp = async () => {
       try {
+        // Initialize audio player
         await setupPlayer();
+
+        // Initialize download service (resume queued downloads)
+        await initializeDownloadService();
+
         setIsPlayerReady(true);
       } catch (error) {
-        console.error('Failed to initialize player:', error);
-        // Still allow app to run even if player setup fails
+        console.error('Failed to initialize app:', error);
+        // Still allow app to run even if initialization fails
         setIsPlayerReady(true);
       }
     };
 
-    initializePlayer();
+    initializeApp();
   }, []);
 
   if (!isPlayerReady) {

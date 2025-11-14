@@ -197,6 +197,7 @@ export const DownloadProvider: React.FC<{children: React.ReactNode}> = ({childre
 
   /**
    * Download multiple surahs
+   * Queues all downloads and processes them concurrently
    */
   const downloadMultipleSurahs = useCallback(async (
     reciter: Reciter,
@@ -204,9 +205,8 @@ export const DownloadProvider: React.FC<{children: React.ReactNode}> = ({childre
     quality: AudioQuality,
   ) => {
     try {
-      for (const surah of surahs) {
-        await DownloadService.downloadFile(reciter, surah, quality);
-      }
+      // Queue all downloads at once for concurrent processing
+      await DownloadService.queueMultipleDownloads(reciter, surahs, quality);
       await refreshDownloads();
     } catch (error) {
       console.error('Error downloading multiple surahs:', error);
@@ -216,6 +216,7 @@ export const DownloadProvider: React.FC<{children: React.ReactNode}> = ({childre
 
   /**
    * Download all surahs for a reciter
+   * Queues all downloads and processes them concurrently
    */
   const downloadAllSurahs = useCallback(async (
     reciter: Reciter,
@@ -223,9 +224,8 @@ export const DownloadProvider: React.FC<{children: React.ReactNode}> = ({childre
     quality: AudioQuality,
   ) => {
     try {
-      for (const surah of allSurahs) {
-        await DownloadService.downloadFile(reciter, surah, quality);
-      }
+      // Queue all downloads at once for concurrent processing
+      await DownloadService.queueMultipleDownloads(reciter, allSurahs, quality);
       await refreshDownloads();
     } catch (error) {
       console.error('Error downloading all surahs:', error);
