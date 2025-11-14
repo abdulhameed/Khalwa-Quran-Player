@@ -1,0 +1,258 @@
+import React, {useEffect, useState} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
+import {useRoute, RouteProp} from '@react-navigation/native';
+import TrackPlayer, {useProgress, State} from 'react-native-track-player';
+import {COLORS, DIMENSIONS} from '../utils/constants';
+import {Surah, Reciter} from '../utils/types';
+import * as AudioService from '../services/AudioService';
+import {buildAudioUrl} from '../services/ApiService';
+
+type PlayerScreenRouteProp = RouteProp<
+  {Player: {surah: Surah; reciter: Reciter}},
+  'Player'
+>;
+
+export default function PlayerScreen() {
+  const route = useRoute<PlayerScreenRouteProp>();
+  const {surah, reciter} = route.params;
+  const progress = useProgress();
+
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [playbackSpeed, setPlaybackSpeed] = useState(1.0);
+
+  useEffect(() => {
+    initializePlayer();
+
+    return () => {
+      // Cleanup if needed
+    };
+  }, []);
+
+  useEffect(() => {
+    const checkPlaybackState = async () => {
+      const state = await TrackPlayer.getPlaybackState();
+      setIsPlaying(state.state === State.Playing);
+      setIsLoading(state.state === State.Buffering || state.state === State.Connecting);
+    };
+
+    checkPlaybackState();
+    const interval = setInterval(checkPlaybackState, 500);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const initializePlayer = async () => {
+    try {
+      setIsLoading(true);
+      const url = buildAudioUrl(reciter, surah);
+      console.log('Playing URL:', url);
+      await AudioService.playSurah(surah, reciter, url);
+      setIsPlaying(true);
+    } catch (error) {
+      console.error('Error initializing player:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const togglePlayPause = async () => {
+    if (isPlaying) {
+      await AudioService.pause();
+      setIsPlaying(false);
+    } else {
+      await AudioService.play();
+      setIsPlaying(true);
+    }
+  };
+
+  const handleSeek = async (value: number) => {
+    await AudioService.seekTo(value);
+  };
+
+  const changeSpeed = async () => {
+    const speeds = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0];
+    const currentIndex = speeds.indexOf(playbackSpeed);
+    const nextIndex = (currentIndex + 1) % speeds.length;
+    const newSpeed = speeds[nextIndex];
+
+    await AudioService.setPlaybackSpeed(newSpeed);
+    setPlaybackSpeed(newSpeed);
+  };
+
+  const formatTime = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  return (
+    <View style={styles.container}>
+      {/* Header */}
+      <View style={styles.header}>
+        <Text style={styles.surahName}>{surah.nameEnglish}</Text>
+        <Text style={styles.surahNameArabic}>{surah.nameArabic}</Text>
+        <Text style={styles.reciterName}>{reciter.nameEnglish}</Text>
+      </View>
+
+      {/* Progress */}
+      <View style={styles.progressContainer}>
+        <View style={styles.progressBar}>
+          <View
+            style={[
+              styles.progressFill,
+              {
+                width: `${
+                  progress.duration > 0
+                    ? (progress.position / progress.duration) * 100
+                    : 0
+                }%`,
+              },
+            ]}
+          />
+        </View>
+        <View style={styles.timeContainer}>
+          <Text style={styles.timeText}>{formatTime(progress.position)}</Text>
+          <Text style={styles.timeText}>{formatTime(progress.duration)}</Text>
+        </View>
+      </View>
+
+      {/* Controls */}
+      <View style={styles.controls}>
+        <TouchableOpacity
+          style={styles.speedButton}
+          onPress={changeSpeed}>
+          <Text style={styles.speedText}>{playbackSpeed}x</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.playButton}
+          onPress={togglePlayPause}
+          disabled={isLoading}>
+          {isLoading ? (
+            <ActivityIndicator size="large" color={COLORS.white} />
+          ) : (
+            <Text style={styles.playButtonText}>
+              {isPlaying ? '⏸' : '▶'}
+            </Text>
+          )}
+        </TouchableOpacity>
+      </View>
+
+      {/* Info */}
+      <View style={styles.infoContainer}>
+        <Text style={styles.infoText}>
+          Surah {surah.id} • {surah.numberOfAyahs} Ayahs
+        </Text>
+        <Text style={styles.infoText}>
+          {surah.revelationPlace}
+        </Text>
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.background,
+    padding: DIMENSIONS.spacing.xl,
+  },
+  header: {
+    alignItems: 'center',
+    marginTop: DIMENSIONS.spacing.xxl,
+    marginBottom: DIMENSIONS.spacing.xxl,
+  },
+  surahName: {
+    fontSize: DIMENSIONS.fontSize.xxxl,
+    fontWeight: 'bold',
+    color: COLORS.text,
+    marginBottom: DIMENSIONS.spacing.sm,
+  },
+  surahNameArabic: {
+    fontSize: DIMENSIONS.fontSize.xxl,
+    color: COLORS.primary,
+    marginBottom: DIMENSIONS.spacing.md,
+  },
+  reciterName: {
+    fontSize: DIMENSIONS.fontSize.lg,
+    color: COLORS.textSecondary,
+  },
+  progressContainer: {
+    marginVertical: DIMENSIONS.spacing.xl,
+  },
+  progressBar: {
+    height: 4,
+    backgroundColor: COLORS.lightGray,
+    borderRadius: DIMENSIONS.borderRadius.sm,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: '100%',
+    backgroundColor: COLORS.primary,
+  },
+  timeContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: DIMENSIONS.spacing.sm,
+  },
+  timeText: {
+    fontSize: DIMENSIONS.fontSize.sm,
+    color: COLORS.textSecondary,
+  },
+  controls: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: DIMENSIONS.spacing.xl,
+  },
+  speedButton: {
+    position: 'absolute',
+    left: DIMENSIONS.spacing.xl,
+    padding: DIMENSIONS.spacing.md,
+    backgroundColor: COLORS.white,
+    borderRadius: DIMENSIONS.borderRadius.lg,
+    shadowColor: COLORS.black,
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  speedText: {
+    fontSize: DIMENSIONS.fontSize.md,
+    color: COLORS.primary,
+    fontWeight: '600',
+  },
+  playButton: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: COLORS.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: COLORS.black,
+    shadowOffset: {width: 0, height: 4},
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  playButtonText: {
+    fontSize: 32,
+    color: COLORS.white,
+  },
+  infoContainer: {
+    alignItems: 'center',
+    marginTop: DIMENSIONS.spacing.xl,
+  },
+  infoText: {
+    fontSize: DIMENSIONS.fontSize.md,
+    color: COLORS.textSecondary,
+    marginBottom: DIMENSIONS.spacing.xs,
+  },
+});
