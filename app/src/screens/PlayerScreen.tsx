@@ -10,11 +10,12 @@ import {
   PanResponder,
   Animated,
 } from 'react-native';
-import {useRoute, RouteProp} from '@react-navigation/native';
+import {useRoute, useNavigation, RouteProp} from '@react-navigation/native';
 import TrackPlayer, {useProgress, State} from 'react-native-track-player';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS, DIMENSIONS} from '../utils/constants';
 import {Surah, Reciter} from '../utils/types';
+import surahsData from '../data/surahs.json';
 import * as AudioService from '../services/AudioService';
 import {buildAudioUrl, buildAyahUrls, isFullSurahSource} from '../services/ApiService';
 import * as DownloadService from '../services/DownloadService';
@@ -30,10 +31,12 @@ type PlayerScreenRouteProp = RouteProp<
 
 export default function PlayerScreen() {
   const route = useRoute<PlayerScreenRouteProp>();
-  const {surah, reciter} = route.params;
+  const {surah: initialSurah, reciter} = route.params;
   const progress = useProgress();
   const downloadContext = useDownload();
+  const surahs = surahsData as Surah[];
 
+  const [currentSurah, setCurrentSurah] = useState<Surah>(initialSurah);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [playbackSpeed, setPlaybackSpeed] = useState(1.0);
@@ -73,16 +76,16 @@ export default function PlayerScreen() {
     return () => {
       // Cleanup if needed
     };
-  }, []);
+  }, [currentSurah.id]);
 
   // Check download status periodically
   useEffect(() => {
-    const downloadStatus = downloadContext.getDownloadStatus(reciter.id, surah.id);
-    const progress = downloadContext.getDownloadProgress(reciter.id, surah.id);
+    const downloadStatus = downloadContext.getDownloadStatus(reciter.id, currentSurah.id);
+    const progress = downloadContext.getDownloadProgress(reciter.id, currentSurah.id);
 
     setIsDownloaded(downloadStatus === 'completed');
     setDownloadProgress(progress);
-  }, [downloadContext.downloads, downloadContext.downloadProgress]);
+  }, [downloadContext.downloads, downloadContext.downloadProgress, currentSurah.id]);
 
   useEffect(() => {
     const checkPlaybackState = async () => {
@@ -104,7 +107,7 @@ export default function PlayerScreen() {
         // Update playback state every 5 seconds
         await PlaybackStateService.savePlaybackState({
           currentReciterId: reciter.id,
-          currentSurahId: surah.id,
+          currentSurahId: currentSurah.id,
           currentPosition: progress.position,
           isPlaying,
         });
@@ -112,53 +115,53 @@ export default function PlayerScreen() {
         // Update position in recently played
         await PlaybackStateService.updateRecentlyPlayedPosition(
           reciter.id,
-          surah.id,
+          currentSurah.id,
           progress.position,
         );
       }
     }, 5000); // Update every 5 seconds
 
     return () => clearInterval(interval);
-  }, [progress.position, progress.duration, reciter.id, surah.id, isPlaying]);
+  }, [progress.position, progress.duration, reciter.id, currentSurah.id, isPlaying]);
 
   const initializePlayer = async () => {
     try {
       setIsLoading(true);
 
       // Check if file is downloaded locally
-      const localPath = await DownloadService.getDownloadedFilePath(reciter.id, surah.id);
+      const localPath = await DownloadService.getDownloadedFilePath(reciter.id, currentSurah.id);
 
       if (localPath) {
         // Play from local storage (assuming local files are full surah)
         const url = `file://${localPath}`;
         console.log('Playing from local storage:', url);
-        await AudioService.playSurah(surah, reciter, url);
+        await AudioService.playSurah(currentSurah, reciter, url);
       } else {
         // Stream from online source
         const source = reciter.sources[0];
 
         if (source && isFullSurahSource(source.sourceId)) {
           // Source provides full surah files
-          const url = buildAudioUrl(reciter, surah);
+          const url = buildAudioUrl(reciter, currentSurah);
           console.log('Streaming full surah URL:', url);
-          await AudioService.playSurah(surah, reciter, url);
+          await AudioService.playSurah(currentSurah, reciter, url);
         } else {
           // Source provides per-ayah files, build playlist
-          const urls = buildAyahUrls(reciter, surah);
+          const urls = buildAyahUrls(reciter, currentSurah);
           console.log(`Streaming ${urls.length} ayahs for full surah`);
-          await AudioService.playSurahFull(surah, reciter, urls);
+          await AudioService.playSurahFull(currentSurah, reciter, urls);
         }
       }
 
       setIsPlaying(true);
 
       // Track playback in recently played
-      await PlaybackStateService.addToRecentlyPlayed(reciter, surah, 0);
+      await PlaybackStateService.addToRecentlyPlayed(reciter, currentSurah, 0);
 
       // Save playback state
       await PlaybackStateService.savePlaybackState({
         currentReciterId: reciter.id,
-        currentSurahId: surah.id,
+        currentSurahId: currentSurah.id,
         currentPosition: 0,
         isPlaying: true,
       });
@@ -232,18 +235,26 @@ export default function PlayerScreen() {
   };
 
   const handleSkipNext = async () => {
-    try {
-      await AudioService.skipToNext();
-    } catch (error) {
-      console.log('No next track');
+    // Find the next surah
+    const currentIndex = surahs.findIndex(s => s.id === currentSurah.id);
+    if (currentIndex < surahs.length - 1) {
+      const nextSurah = surahs[currentIndex + 1];
+      // Update the current surah state (this will trigger re-initialization via useEffect)
+      setCurrentSurah(nextSurah);
+    } else {
+      console.log('Already at the last surah');
     }
   };
 
   const handleSkipPrevious = async () => {
-    try {
-      await AudioService.skipToPrevious();
-    } catch (error) {
-      console.log('No previous track');
+    // Find the previous surah
+    const currentIndex = surahs.findIndex(s => s.id === currentSurah.id);
+    if (currentIndex > 0) {
+      const previousSurah = surahs[currentIndex - 1];
+      // Update the current surah state (this will trigger re-initialization via useEffect)
+      setCurrentSurah(previousSurah);
+    } else {
+      console.log('Already at the first surah');
     }
   };
 
@@ -254,18 +265,18 @@ export default function PlayerScreen() {
   };
 
   const checkFavoriteStatus = async () => {
-    const favoriteStatus = await StorageService.isFavorite(reciter.id, surah.id);
+    const favoriteStatus = await StorageService.isFavorite(reciter.id, currentSurah.id);
     setIsFavorite(favoriteStatus);
   };
 
   const checkDownloadStatus = async () => {
-    const downloaded = await DownloadService.isFileDownloaded(reciter.id, surah.id);
+    const downloaded = await DownloadService.isFileDownloaded(reciter.id, currentSurah.id);
     setIsDownloaded(downloaded);
   };
 
   const handleToggleFavorite = async () => {
     try {
-      const newStatus = await StorageService.toggleFavorite(reciter.id, surah.id);
+      const newStatus = await StorageService.toggleFavorite(reciter.id, currentSurah.id);
       setIsFavorite(newStatus);
     } catch (error) {
       console.error('Error toggling favorite:', error);
@@ -278,7 +289,7 @@ export default function PlayerScreen() {
     try {
       // Use user's preferred quality
       const preferences = await StorageService.getUserPreferences();
-      await downloadContext.startDownload(reciter, surah, preferences.defaultQuality);
+      await downloadContext.startDownload(reciter, currentSurah, preferences.defaultQuality);
     } catch (error) {
       console.error('Error starting download:', error);
     }
@@ -288,8 +299,8 @@ export default function PlayerScreen() {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.surahName}>{surah.nameEnglish}</Text>
-        <Text style={styles.surahNameArabic}>{surah.nameArabic}</Text>
+        <Text style={styles.surahName}>{currentSurah.nameEnglish}</Text>
+        <Text style={styles.surahNameArabic}>{currentSurah.nameArabic}</Text>
         <Text style={styles.reciterName}>{reciter.nameEnglish}</Text>
       </View>
 
@@ -464,10 +475,10 @@ export default function PlayerScreen() {
       {/* Info */}
       <View style={styles.infoContainer}>
         <Text style={styles.infoText}>
-          Surah {surah.id} • {surah.numberOfAyahs} Ayahs
+          Surah {currentSurah.id} • {currentSurah.numberOfAyahs} Ayahs
         </Text>
         <Text style={styles.infoText}>
-          {surah.revelationPlace}
+          {currentSurah.revelationPlace}
         </Text>
       </View>
     </View>
