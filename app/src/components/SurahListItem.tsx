@@ -11,6 +11,7 @@ import {
   StyleSheet,
   ActivityIndicator,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 import {Reciter, Surah} from '../utils/types';
 import {COLORS, DIMENSIONS, DOWNLOAD_STATUS} from '../utils/constants';
 import {useDownload} from '../contexts/DownloadContext';
@@ -46,7 +47,7 @@ export const SurahListItem: React.FC<SurahListItemProps> = ({
       case DOWNLOAD_STATUS.COMPLETED:
         return (
           <View style={styles.iconContainer}>
-            <Text style={styles.completedIcon}>✓</Text>
+            <Icon name="checkmark-circle" size={28} color={COLORS.success} />
           </View>
         );
 
@@ -61,21 +62,21 @@ export const SurahListItem: React.FC<SurahListItemProps> = ({
       case DOWNLOAD_STATUS.QUEUED:
         return (
           <View style={styles.iconContainer}>
-            <Text style={styles.queuedIcon}>⏳</Text>
+            <Icon name="time-outline" size={24} color={COLORS.warning} />
           </View>
         );
 
       case DOWNLOAD_STATUS.PAUSED:
         return (
           <View style={styles.iconContainer}>
-            <Text style={styles.pausedIcon}>⏸</Text>
+            <Icon name="pause-circle-outline" size={24} color={COLORS.warning} />
           </View>
         );
 
       case DOWNLOAD_STATUS.FAILED:
         return (
           <View style={styles.iconContainer}>
-            <Text style={styles.failedIcon}>⚠</Text>
+            <Icon name="alert-circle-outline" size={24} color={COLORS.error} />
           </View>
         );
 
@@ -85,7 +86,7 @@ export const SurahListItem: React.FC<SurahListItemProps> = ({
             style={styles.downloadButton}
             onPress={onDownloadPress}
           >
-            <Text style={styles.downloadIcon}>⬇</Text>
+            <Icon name="cloud-download-outline" size={22} color={COLORS.white} />
           </TouchableOpacity>
         );
     }

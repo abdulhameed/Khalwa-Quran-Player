@@ -113,6 +113,7 @@ export type RootStackParamList = {
   Reciters: undefined;
   Library: undefined;
   Settings: undefined;
-  ReciterDetail: {reciterId: string};
+  ReciterDetail: {reciter: Reciter};
+  Surahs: {reciter: Reciter};
   Player: {reciter: Reciter; surah: Surah};
 };
