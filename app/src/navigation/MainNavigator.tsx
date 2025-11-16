@@ -1,8 +1,7 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {useNavigationState} from '@react-navigation/native';
 import {COLORS, DIMENSIONS} from '../utils/constants';
 
 // Screens
@@ -72,13 +71,9 @@ function TabNavigator() {
 }
 
 export default function MainNavigator() {
-  // Get current route name to hide mini player on Player screen
-  const currentRouteName = useNavigationState(state => {
-    if (!state) return undefined;
-    const route = state.routes[state.index];
-    return route.name;
-  });
+  const [currentRouteName, setCurrentRouteName] = useState<string | undefined>();
 
+  // Show mini player on all screens except Player screen
   const showMiniPlayer = currentRouteName !== 'Player';
 
   return (
@@ -87,7 +82,13 @@ export default function MainNavigator() {
         screenOptions={{
           headerShown: false,
         }}>
-        <Stack.Screen name="MainTabs" component={TabNavigator} />
+        <Stack.Screen
+          name="MainTabs"
+          component={TabNavigator}
+          listeners={{
+            focus: () => setCurrentRouteName('MainTabs'),
+          }}
+        />
         <Stack.Screen
           name="Surahs"
           component={SurahsScreen}
@@ -101,6 +102,9 @@ export default function MainNavigator() {
             headerTitleStyle: {
               fontWeight: '600',
             },
+          }}
+          listeners={{
+            focus: () => setCurrentRouteName('Surahs'),
           }}
         />
         <Stack.Screen
@@ -116,6 +120,9 @@ export default function MainNavigator() {
             headerTitleStyle: {
               fontWeight: '600',
             },
+          }}
+          listeners={{
+            focus: () => setCurrentRouteName('Player'),
           }}
         />
       </Stack.Navigator>

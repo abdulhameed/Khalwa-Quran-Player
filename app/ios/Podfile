@@ -17,9 +17,6 @@ end
 target 'QuranPlayer' do
   config = use_native_modules!
 
-  # Alias for RNWorklets to resolve react-native-reanimated dependency
-  pod 'RNWorklets', :podspec => './RNWorklets.podspec'
-
   use_react_native!(
     :path => config[:reactNativePath],
     # An absolute path to your application root.
@@ -33,5 +30,28 @@ target 'QuranPlayer' do
       :mac_catalyst_enabled => false,
       # :ccache_enabled => true
     )
+
+    # Fix for Folly typedef and coroutine issues - apply to all targets
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)']
+        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'FOLLY_HAVE_CLOCK_GETTIME=1'
+        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'FOLLY_CFG_NO_COROUTINES=1'
+
+        # Fix header search paths for React Native
+        config.build_settings['HEADER_SEARCH_PATHS'] ||= ['$(inherited)']
+
+        # Fix for RNReanimated override errors with New Architecture
+        # Treat warnings as non-errors
+        config.build_settings['GCC_TREAT_WARNINGS_AS_ERRORS'] = 'NO'
+        config.build_settings['GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS'] = 'NO'
+        config.build_settings['CLANG_WARN_INCONSISTENT_MISSING_OVERRIDE'] = 'NO'
+
+        # Additional flags to suppress specific errors
+        config.build_settings['OTHER_CPLUSPLUSFLAGS'] ||= ['$(inherited)']
+        config.build_settings['OTHER_CPLUSPLUSFLAGS'] << '-Wno-overloaded-virtual'
+        config.build_settings['OTHER_CPLUSPLUSFLAGS'] << '-Wno-inconsistent-missing-override'
+      end
+    end
   end
 end
