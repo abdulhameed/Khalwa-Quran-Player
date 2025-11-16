@@ -868,10 +868,10 @@ Example: https://server8.mp3quran.net/basit/001.mp3
   - [x] Display reciter name
   - [x] Show all player controls
   - [x] Current time / total duration
-  - [ ] Download button (if not downloaded)
-  - [ ] Favorite button
-- [ ] Implement playback state persistence:
-  - [ ] Save current surah, reciter, position
+  - [x] Download button (if not downloaded)
+  - [x] Favorite button
+- [x] Implement playback state persistence:
+  - [x] Save current surah, reciter, position
   - [ ] Load state on app start
   - [ ] Resume functionality
 
@@ -927,29 +927,29 @@ Example: https://server8.mp3quran.net/basit/001.mp3
 
 ### 13.5 Phase 5: Download System
 **Week 5: Basic Downloads**
-- [ ] Implement DownloadService.js:
-  - [ ] Download single file function
-  - [ ] Save to organized directory structure
-  - [ ] Progress tracking
-  - [ ] Download queue management
-  - [ ] Pause/resume functionality
-  - [ ] Cancel download
-  - [ ] Retry failed downloads
-- [ ] Create DownloadContext:
-  - [ ] Manage download queue state
-  - [ ] Track download progress
-  - [ ] Store download metadata
-- [ ] Implement per-surah download:
+- [x] Implement DownloadService.js:
+  - [x] Download single file function
+  - [x] Save to organized directory structure
+  - [x] Progress tracking
+  - [x] Download queue management
+  - [x] Pause/resume functionality
+  - [x] Cancel download
+  - [x] Retry failed downloads
+- [x] Create DownloadContext:
+  - [x] Manage download queue state
+  - [x] Track download progress
+  - [x] Store download metadata
+- [x] Implement per-surah download:
   - [ ] Download button in SurahListItem
-  - [ ] Quality selection dialog
-  - [ ] Show estimated file size
-  - [ ] Progress indicator
-  - [ ] Success notification
-- [ ] Update UI to show download status:
-  - [ ] Downloaded icon
-  - [ ] Downloading progress
-  - [ ] Queued indicator
-  - [ ] Failed state with retry
+  - [x] Quality selection dialog
+  - [x] Show estimated file size
+  - [x] Progress indicator
+  - [x] Success notification
+- [x] Update UI to show download status:
+  - [x] Downloaded icon
+  - [x] Downloading progress
+  - [x] Queued indicator
+  - [x] Failed state with retry
 
 **Week 5-6: Advanced Downloads**
 - [ ] Implement batch downloads:
@@ -981,24 +981,24 @@ Example: https://server8.mp3quran.net/basit/001.mp3
 
 ### 13.6 Phase 6: Library & Downloaded Content
 **Week 6: Library Implementation**
-- [ ] Update LibraryScreen.js:
-  - [ ] List downloaded reciters
-  - [ ] Show download count per reciter
-  - [ ] Navigate to reciter's downloaded surahs
-- [ ] Create downloaded surahs view:
-  - [ ] Filter to show only downloaded surahs
-  - [ ] Play from local storage
+- [x] Update LibraryScreen.js:
+  - [x] List downloaded reciters
+  - [x] Show download count per reciter
+  - [x] Navigate to reciter's downloaded surahs
+- [x] Create downloaded surahs view:
+  - [x] Filter to show only downloaded surahs
+  - [x] Play from local storage
   - [ ] Delete individual surahs
-- [ ] Implement favorites:
-  - [ ] Add/remove favorite functionality
+- [x] Implement favorites:
+  - [x] Add/remove favorite functionality
   - [ ] Favorite icon in SurahListItem
-  - [ ] Favorites section in Library
-  - [ ] Persist favorites in AsyncStorage
-- [ ] Implement recently played:
-  - [ ] Track play history
-  - [ ] Show last 10-20 items
-  - [ ] Display in Home screen
-  - [ ] Tap to resume
+  - [x] Favorites section in Library
+  - [x] Persist favorites in AsyncStorage
+- [x] Implement recently played:
+  - [x] Track play history
+  - [x] Show last 10-20 items
+  - [x] Display in Home screen
+  - [x] Tap to resume
 - [ ] Implement "Continue Listening":
   - [ ] Load last playback state
   - [ ] Show card on Home screen
