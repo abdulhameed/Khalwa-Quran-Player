@@ -17,6 +17,30 @@ Simple, Lovable, and Complete (SLC) - Not an MVP
 ### 1.4 Core Value Proposition
 Easy-to-use Quran audio player with multiple sources and reciters, flexible download options, and beautiful Islamic design that works seamlessly online and offline.
 
+### 1.5 Search & Discovery Features (Implemented)
+The app includes comprehensive search and discovery capabilities to help users easily find reciters and surahs:
+
+**Reciter Discovery:**
+- Search by name (Arabic or English) with fuzzy matching
+- Filter by style (Murattal, Mujawwad, etc.) and country
+- Sort by name (A-Z, Z-A), popularity, or recently added
+- Real-time search results with relevance scoring
+
+**Surah Discovery:**
+- Search by surah name (Arabic, English, or transliteration) or number
+- Filter by length (short < 2 min, medium 2-10 min, long > 10 min)
+- Filter by revelation place (Makkah or Madinah)
+- Filter by download status (downloaded or not downloaded)
+- Filter by favorites
+- Sort by number, name, or length
+- Active filter chips showing applied filters with one-tap removal
+
+**Search Components:**
+- Reusable SearchInput component with clear button
+- FilterChips component for displaying active filters
+- NoResultsPlaceholder for empty search results
+- Modal-based filter and sort interfaces
+
 ---
 
 ## 2. Technical Stack
@@ -884,14 +908,17 @@ Example: https://server8.mp3quran.net/basit/001.mp3
 - [x] Create RecitersScreen.js:
   - [x] List view of reciters
   - [x] ReciterCard.js component (photo, name, style) *(inline in screen)*
-  - [ ] Search functionality
-  - [ ] Navigation to reciter detail
-- [ ] Create ReciterDetailScreen.js:
-  - [ ] Reciter profile header (photo, name, bio, style)
-  - [ ] List of 114 surahs
-  - [ ] SurahListItem.js component
-  - [ ] Download status indicators
-  - [ ] Navigation to player on tap
+  - [x] Search functionality
+  - [x] Navigation to reciter detail
+- [x] Create ReciterDetailScreen.js:
+  - [x] Reciter profile header (photo, name, bio, style)
+  - [x] List of 114 surahs
+  - [x] SurahListItem.js component
+  - [x] Download status indicators
+  - [x] Navigation to player on tap
+  - [x] Surah search functionality
+  - [x] Surah filtering (by length, revelation place, downloaded, favorites)
+  - [x] Surah sorting (by number, name, length)
 - [x] Create LibraryScreen.js (basic structure):
   - [x] Empty state message
   - [x] Placeholder for downloaded content
@@ -1043,14 +1070,14 @@ Example: https://server8.mp3quran.net/basit/001.mp3
   - [ ] List available sources
   - [ ] Source selector dropdown
   - [ ] Persist selected source per reciter
-- [ ] Add reciter filtering:
-  - [ ] Filter by style
-  - [ ] Filter by region (optional)
-  - [ ] Sort by name, popularity
-- [ ] Implement reciter search:
-  - [ ] Search by name (Arabic/English)
-  - [ ] Fuzzy matching
-  - [ ] Search results screen
+- [x] Add reciter filtering:
+  - [x] Filter by style
+  - [x] Filter by country
+  - [x] Sort by name, popularity
+- [x] Implement reciter search:
+  - [x] Search by name (Arabic/English)
+  - [x] Fuzzy matching
+  - [x] Search results screen
 
 ### 13.9 Phase 9: Polish & Design
 **Week 7-8: Visual Design Implementation**
