@@ -11,6 +11,7 @@ import LibraryScreen from '../screens/LibraryScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import PlayerScreen from '../screens/PlayerScreen';
 import {SurahsScreen} from '../screens/SurahsScreen';
+import {ReciterDetailScreen} from '../screens/ReciterDetailScreen';
 
 // Components
 import MiniPlayer from '../components/MiniPlayer';
@@ -87,6 +88,24 @@ export default function MainNavigator() {
           component={TabNavigator}
           listeners={{
             focus: () => setCurrentRouteName('MainTabs'),
+          }}
+        />
+        <Stack.Screen
+          name="ReciterDetail"
+          component={ReciterDetailScreen}
+          options={{
+            headerShown: true,
+            headerTitle: 'Reciter Details',
+            headerStyle: {
+              backgroundColor: COLORS.primary,
+            },
+            headerTintColor: COLORS.white,
+            headerTitleStyle: {
+              fontWeight: '600',
+            },
+          }}
+          listeners={{
+            focus: () => setCurrentRouteName('ReciterDetail'),
           }}
         />
         <Stack.Screen

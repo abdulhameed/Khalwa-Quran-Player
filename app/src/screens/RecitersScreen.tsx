@@ -15,8 +15,8 @@ export default function RecitersScreen() {
   const surahs = surahsData as Surah[];
 
   const handleReciterPress = (reciter: Reciter) => {
-    // Navigate to Surahs screen to select a surah
-    navigation.navigate('Surahs' as never, {reciter} as never);
+    // Navigate to ReciterDetail screen
+    navigation.navigate('ReciterDetail' as never, {reciter} as never);
   };
 
   const renderReciter = ({item}: {item: Reciter}) => (
@@ -28,7 +28,7 @@ export default function RecitersScreen() {
       <Text style={styles.reciterNameArabic}>{item.nameArabic}</Text>
       <Text style={styles.reciterStyle}>{item.style}</Text>
       <Text style={styles.reciterCountry}>{item.country}</Text>
-      <Text style={styles.tapHint}>Tap to browse surahs</Text>
+      <Text style={styles.tapHint}>Tap to view details</Text>
     </TouchableOpacity>
   );
 
