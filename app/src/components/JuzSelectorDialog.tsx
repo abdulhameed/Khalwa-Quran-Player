@@ -3,14 +3,14 @@
  * Modal for selecting a Juz (1-30) for batch download
  */
 
-import React from 'react';
+import React, {useMemo} from 'react';
 import {
   View,
   Text,
   Modal,
   TouchableOpacity,
   StyleSheet,
-  ScrollView,
+  FlatList,
 } from 'react-native';
 import {Juz} from '../utils/types';
 import {COLORS, DIMENSIONS} from '../utils/constants';
@@ -29,6 +29,9 @@ export const JuzSelectorDialog: React.FC<JuzSelectorDialogProps> = ({
   onSelect,
   onCancel,
 }) => {
+  // Convert juz data to typed array
+  const juzList = useMemo(() => juzData as Juz[], []);
+
   /**
    * Get surah count for a Juz
    */
@@ -41,23 +44,22 @@ export const JuzSelectorDialog: React.FC<JuzSelectorDialogProps> = ({
   /**
    * Render Juz option
    */
-  const renderJuzOption = (juz: Juz) => {
-    const surahCount = getSurahCount(juz);
+  const renderJuzOption = ({item}: {item: Juz}) => {
+    const surahCount = getSurahCount(item);
 
     return (
       <TouchableOpacity
-        key={juz.id}
         style={styles.optionButton}
-        onPress={() => onSelect(juz)}
+        onPress={() => onSelect(item)}
         activeOpacity={0.7}
       >
         <View style={styles.juzNumber}>
-          <Text style={styles.juzNumberText}>{juz.id}</Text>
+          <Text style={styles.juzNumberText}>{item.id}</Text>
         </View>
 
         <View style={styles.optionContent}>
-          <Text style={styles.optionLabel}>{juz.nameEnglish}</Text>
-          <Text style={styles.optionLabelArabic}>{juz.nameArabic}</Text>
+          <Text style={styles.optionLabel}>{item.nameEnglish}</Text>
+          <Text style={styles.optionLabelArabic}>{item.nameArabic}</Text>
           <Text style={styles.optionDescription}>
             {surahCount} {surahCount === 1 ? 'Surah' : 'Surahs'}
           </Text>
@@ -68,6 +70,34 @@ export const JuzSelectorDialog: React.FC<JuzSelectorDialogProps> = ({
     );
   };
 
+  /**
+   * Render header
+   */
+  const renderHeader = () => (
+    <View style={styles.header}>
+      <Text style={styles.title}>Download by Juz</Text>
+      <Text style={styles.subtitle}>{reciterName}</Text>
+      <Text style={styles.hint}>
+        Select a Juz to download all its surahs
+      </Text>
+    </View>
+  );
+
+  /**
+   * Render footer
+   */
+  const renderFooter = () => (
+    <View style={styles.footer}>
+      <TouchableOpacity
+        style={styles.cancelButton}
+        onPress={onCancel}
+        activeOpacity={0.7}
+      >
+        <Text style={styles.cancelButtonText}>Cancel</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
   return (
     <Modal
       visible={visible}
@@ -77,30 +107,20 @@ export const JuzSelectorDialog: React.FC<JuzSelectorDialogProps> = ({
     >
       <View style={styles.overlay}>
         <View style={styles.container}>
-          {/* Header */}
-          <View style={styles.header}>
-            <Text style={styles.title}>Download by Juz</Text>
-            <Text style={styles.subtitle}>{reciterName}</Text>
-            <Text style={styles.hint}>
-              Select a Juz to download all its surahs
-            </Text>
-          </View>
+          {renderHeader()}
 
-          {/* Juz Options */}
-          <ScrollView style={styles.content}>
-            {(juzData as Juz[]).map(renderJuzOption)}
-          </ScrollView>
+          {/* Juz Options List */}
+          <FlatList
+            data={juzList}
+            renderItem={renderJuzOption}
+            keyExtractor={(item) => item.id.toString()}
+            style={styles.content}
+            showsVerticalScrollIndicator={true}
+            initialNumToRender={15}
+            maxToRenderPerBatch={10}
+          />
 
-          {/* Footer */}
-          <View style={styles.footer}>
-            <TouchableOpacity
-              style={styles.cancelButton}
-              onPress={onCancel}
-              activeOpacity={0.7}
-            >
-              <Text style={styles.cancelButtonText}>Cancel</Text>
-            </TouchableOpacity>
-          </View>
+          {renderFooter()}
         </View>
       </View>
     </Modal>
