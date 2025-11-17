@@ -42,6 +42,26 @@ export interface Surah {
 }
 
 /**
+ * Juz Surah definition (for surahs within a Juz)
+ */
+export interface JuzSurah {
+  surahId: number;
+  isComplete: boolean;
+  startAyah?: number; // For partial surahs
+  endAyah?: number; // For partial surahs
+}
+
+/**
+ * Juz type definition
+ */
+export interface Juz {
+  id: number; // 1-30
+  nameArabic: string;
+  nameEnglish: string;
+  surahs: JuzSurah[];
+}
+
+/**
  * Download type definition
  */
 export interface Download {

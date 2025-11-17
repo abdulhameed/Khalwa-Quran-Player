@@ -952,17 +952,17 @@ Example: https://server8.mp3quran.net/basit/001.mp3
   - [x] Failed state with retry
 
 **Week 5-6: Advanced Downloads**
-- [ ] Implement batch downloads:
-  - [ ] "Download by Juz" feature
-  - [ ] Create Juz selector UI
-  - [ ] Show surahs in selected Juz
-  - [ ] Queue all surahs in Juz
-  - [ ] Multi-select surahs UI (checkboxes)
-  - [ ] "Download Selected" button
-- [ ] Implement "Download All" (full Quran):
-  - [ ] Button in reciter profile
-  - [ ] Confirmation dialog with total size
-  - [ ] Queue all 114 surahs
+- [x] Implement batch downloads:
+  - [x] "Download by Juz" feature
+  - [x] Create Juz selector UI
+  - [x] Show surahs in selected Juz
+  - [x] Queue all surahs in Juz
+  - [x] Multi-select surahs UI (checkboxes)
+  - [x] "Download Selected" button
+- [x] Implement "Download All" (full Quran):
+  - [x] Button in reciter profile
+  - [x] Confirmation dialog with total size
+  - [x] Queue all 114 surahs
 - [ ] Implement download queue UI:
   - [ ] Queue screen/modal
   - [ ] Show all queued/downloading items
