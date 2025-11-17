@@ -136,4 +136,5 @@ export type RootStackParamList = {
   ReciterDetail: {reciter: Reciter};
   Surahs: {reciter: Reciter};
   Player: {reciter: Reciter; surah: Surah};
+  StorageManagement: undefined;
 };

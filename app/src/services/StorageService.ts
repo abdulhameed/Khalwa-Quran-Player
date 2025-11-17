@@ -4,6 +4,7 @@
  */
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import RNFS from 'react-native-fs';
 import {Download, UserPreferences} from '../utils/types';
 import {AUDIO_QUALITY, DOWNLOAD_STATUS} from '../utils/constants';
 
@@ -406,5 +407,129 @@ export const clearAllStorage = async (): Promise<void> => {
   } catch (error) {
     console.error('Error clearing storage:', error);
     throw error;
+  }
+};
+
+/**
+ * Storage info by reciter
+ */
+export interface ReciterStorageInfo {
+  reciterId: string;
+  reciterName: string;
+  downloadCount: number;
+  totalSize: number;
+  downloads: Download[];
+}
+
+/**
+ * Get storage breakdown by reciter
+ */
+export const getStorageByReciter = async (): Promise<ReciterStorageInfo[]> => {
+  try {
+    const downloads = await getDownloadsByStatus(DOWNLOAD_STATUS.COMPLETED);
+
+    // Group by reciter
+    const reciterMap = new Map<string, ReciterStorageInfo>();
+
+    for (const download of downloads) {
+      const existing = reciterMap.get(download.reciterId);
+
+      if (existing) {
+        existing.downloadCount++;
+        existing.totalSize += download.fileSize;
+        existing.downloads.push(download);
+      } else {
+        reciterMap.set(download.reciterId, {
+          reciterId: download.reciterId,
+          reciterName: download.reciterNameEnglish || download.reciterId,
+          downloadCount: 1,
+          totalSize: download.fileSize,
+          downloads: [download],
+        });
+      }
+    }
+
+    // Convert to array and sort by size (largest first)
+    return Array.from(reciterMap.values()).sort((a, b) => b.totalSize - a.totalSize);
+  } catch (error) {
+    console.error('Error getting storage by reciter:', error);
+    return [];
+  }
+};
+
+/**
+ * Delete all downloads for a specific reciter
+ */
+export const deleteDownloadsByReciter = async (reciterId: string): Promise<void> => {
+  try {
+    const downloads = await getDownloadsByReciter(reciterId);
+    const allDownloads = await getAllDownloads();
+
+    // Filter out downloads for this reciter
+    const filtered = allDownloads.filter(d => d.reciterId !== reciterId);
+    await AsyncStorage.setItem(STORAGE_KEYS.DOWNLOADS, JSON.stringify(filtered));
+  } catch (error) {
+    console.error('Error deleting downloads by reciter:', error);
+    throw error;
+  }
+};
+
+/**
+ * Device storage info
+ */
+export interface DeviceStorageInfo {
+  totalSpace: number;
+  freeSpace: number;
+  usedSpace: number;
+}
+
+/**
+ * Get device storage information
+ */
+export const getDeviceStorageInfo = async (): Promise<DeviceStorageInfo> => {
+  try {
+    const fsi = await RNFS.getFSInfo();
+
+    return {
+      totalSpace: fsi.totalSpace,
+      freeSpace: fsi.freeSpace,
+      usedSpace: fsi.totalSpace - fsi.freeSpace,
+    };
+  } catch (error) {
+    console.error('Error getting device storage info:', error);
+    return {
+      totalSpace: 0,
+      freeSpace: 0,
+      usedSpace: 0,
+    };
+  }
+};
+
+/**
+ * Check if device has low storage (< 500 MB)
+ */
+export const hasLowStorage = async (): Promise<boolean> => {
+  try {
+    const storageInfo = await getDeviceStorageInfo();
+    const lowStorageThreshold = 500 * 1024 * 1024; // 500 MB in bytes
+    return storageInfo.freeSpace < lowStorageThreshold;
+  } catch (error) {
+    console.error('Error checking low storage:', error);
+    return false;
+  }
+};
+
+/**
+ * Check if device has enough space for a download
+ */
+export const hasEnoughSpace = async (requiredSize: number): Promise<boolean> => {
+  try {
+    const storageInfo = await getDeviceStorageInfo();
+    // Add 10% buffer for safety
+    const requiredWithBuffer = requiredSize * 1.1;
+    return storageInfo.freeSpace >= requiredWithBuffer;
+  } catch (error) {
+    console.error('Error checking available space:', error);
+    return false;
   }
 };

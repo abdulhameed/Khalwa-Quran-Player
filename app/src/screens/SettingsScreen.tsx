@@ -9,6 +9,7 @@ import {
   Alert,
   Modal,
 } from 'react-native';
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import {COLORS, DIMENSIONS, AUDIO_QUALITY} from '../utils/constants';
 import {UserPreferences, AudioQuality} from '../utils/types';
 import {
@@ -16,6 +17,8 @@ import {
   saveUserPreferences,
   getTotalDownloadedSize,
   getAllDownloads,
+  hasLowStorage,
+  getDeviceStorageInfo,
 } from '../services/StorageService';
 import {deleteDownload} from '../services/DownloadService';
 
@@ -23,6 +26,7 @@ type ThemeOption = 'light' | 'dark' | 'auto';
 type QualityOption = 'low' | 'medium' | 'high';
 
 export default function SettingsScreen() {
+  const navigation = useNavigation<any>();
   const [preferences, setPreferences] = useState<UserPreferences>({
     defaultQuality: AUDIO_QUALITY.MEDIUM,
     wifiOnlyDownloads: true,
@@ -34,11 +38,20 @@ export default function SettingsScreen() {
   const [downloadCount, setDownloadCount] = useState<number>(0);
   const [showQualityPicker, setShowQualityPicker] = useState(false);
   const [showThemePicker, setShowThemePicker] = useState(false);
+  const [lowStorage, setLowStorage] = useState(false);
+  const [deviceFreeSpace, setDeviceFreeSpace] = useState<number>(0);
 
   useEffect(() => {
     loadPreferences();
     loadStorageInfo();
   }, []);
+
+  // Reload storage info when screen comes into focus
+  useFocusEffect(
+    React.useCallback(() => {
+      loadStorageInfo();
+    }, [])
+  );
 
   const loadPreferences = async () => {
     try {
@@ -51,10 +64,17 @@ export default function SettingsScreen() {
 
   const loadStorageInfo = async () => {
     try {
-      const size = await getTotalDownloadedSize();
-      const downloads = await getAllDownloads();
+      const [size, downloads, isLowStorage, deviceStorage] = await Promise.all([
+        getTotalDownloadedSize(),
+        getAllDownloads(),
+        hasLowStorage(),
+        getDeviceStorageInfo(),
+      ]);
+
       setStorageUsed(size);
       setDownloadCount(downloads.length);
+      setLowStorage(isLowStorage);
+      setDeviceFreeSpace(deviceStorage.freeSpace);
     } catch (error) {
       console.error('Error loading storage info:', error);
     }
@@ -249,8 +269,18 @@ export default function SettingsScreen() {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Storage</Text>
 
+        {/* Low Storage Warning */}
+        {lowStorage && (
+          <View style={styles.warningBanner}>
+            <Text style={styles.warningIcon}>⚠️</Text>
+            <Text style={styles.warningText}>
+              Low storage: Less than 500 MB free
+            </Text>
+          </View>
+        )}
+
         <View style={styles.settingItem}>
-          <Text style={styles.settingLabel}>Total Storage Used</Text>
+          <Text style={styles.settingLabel}>App Storage Used</Text>
           <Text style={styles.settingValue}>{formatBytes(storageUsed)}</Text>
         </View>
 
@@ -258,6 +288,20 @@ export default function SettingsScreen() {
           <Text style={styles.settingLabel}>Downloads</Text>
           <Text style={styles.settingValue}>{downloadCount} files</Text>
         </View>
+
+        <View style={styles.settingItem}>
+          <Text style={styles.settingLabel}>Device Free Space</Text>
+          <Text style={[styles.settingValue, lowStorage && styles.lowStorageText]}>
+            {formatBytes(deviceFreeSpace)}
+          </Text>
+        </View>
+
+        {/* Navigate to Storage Management */}
+        <TouchableOpacity
+          style={[styles.settingItem, styles.primaryButton]}
+          onPress={() => navigation.navigate('StorageManagement')}>
+          <Text style={styles.primaryButtonText}>Manage Storage</Text>
+        </TouchableOpacity>
 
         {downloadCount > 0 && (
           <TouchableOpacity
@@ -377,6 +421,39 @@ const styles = StyleSheet.create({
     fontSize: DIMENSIONS.fontSize.md,
     color: COLORS.primary,
     fontWeight: '500',
+  },
+  warningBanner: {
+    backgroundColor: '#FFF3E0',
+    borderRadius: DIMENSIONS.borderRadius.md,
+    padding: DIMENSIONS.spacing.md,
+    marginBottom: DIMENSIONS.spacing.sm,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderLeftWidth: 4,
+    borderLeftColor: COLORS.warning,
+  },
+  warningIcon: {
+    fontSize: DIMENSIONS.fontSize.lg,
+    marginRight: DIMENSIONS.spacing.sm,
+  },
+  warningText: {
+    fontSize: DIMENSIONS.fontSize.sm,
+    color: COLORS.text,
+    fontWeight: '500',
+    flex: 1,
+  },
+  lowStorageText: {
+    color: COLORS.warning,
+  },
+  primaryButton: {
+    backgroundColor: COLORS.primary,
+    justifyContent: 'center',
+  },
+  primaryButtonText: {
+    fontSize: DIMENSIONS.fontSize.md,
+    color: COLORS.white,
+    fontWeight: '600',
+    textAlign: 'center',
   },
   dangerButton: {
     backgroundColor: COLORS.error,

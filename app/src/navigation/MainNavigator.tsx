@@ -12,6 +12,7 @@ import SettingsScreen from '../screens/SettingsScreen';
 import PlayerScreen from '../screens/PlayerScreen';
 import {SurahsScreen} from '../screens/SurahsScreen';
 import {ReciterDetailScreen} from '../screens/ReciterDetailScreen';
+import StorageManagementScreen from '../screens/StorageManagementScreen';
 
 // Components
 import MiniPlayer from '../components/MiniPlayer';
@@ -142,6 +143,24 @@ export default function MainNavigator() {
           }}
           listeners={{
             focus: () => setCurrentRouteName('Player'),
+          }}
+        />
+        <Stack.Screen
+          name="StorageManagement"
+          component={StorageManagementScreen}
+          options={{
+            headerShown: true,
+            headerTitle: 'Storage Management',
+            headerStyle: {
+              backgroundColor: COLORS.primary,
+            },
+            headerTintColor: COLORS.white,
+            headerTitleStyle: {
+              fontWeight: '600',
+            },
+          }}
+          listeners={{
+            focus: () => setCurrentRouteName('StorageManagement'),
           }}
         />
       </Stack.Navigator>
