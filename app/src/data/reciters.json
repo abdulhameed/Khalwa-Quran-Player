@@ -9,9 +9,9 @@
     "country": "Egypt",
     "sources": [
       {
-        "sourceId": "mp3quran",
-        "sourceName": "Mp3Quran.net",
-        "baseUrl": "https://server8.mp3quran.net/basit",
+        "sourceId": "everyayah",
+        "sourceName": "EveryAyah.com",
+        "baseUrl": "https://everyayah.com/data/Abdul_Basit_Murattal_192kbps",
         "qualities": ["high"]
       }
     ]
@@ -26,10 +26,10 @@
     "country": "Kuwait",
     "sources": [
       {
-        "sourceId": "mp3quran",
-        "sourceName": "Mp3Quran.net",
-        "baseUrl": "https://server11.mp3quran.net/sds",
-        "qualities": ["high"]
+        "sourceId": "everyayah",
+        "sourceName": "EveryAyah.com",
+        "baseUrl": "https://everyayah.com/data/Alafasy_128kbps",
+        "qualities": ["medium"]
       }
     ]
   },
@@ -43,10 +43,10 @@
     "country": "Saudi Arabia",
     "sources": [
       {
-        "sourceId": "mp3quran",
-        "sourceName": "Mp3Quran.net",
-        "baseUrl": "https://server7.mp3quran.net/s_gmd",
-        "qualities": ["high"]
+        "sourceId": "everyayah",
+        "sourceName": "EveryAyah.com",
+        "baseUrl": "https://everyayah.com/data/Ghamadi_40kbps",
+        "qualities": ["medium"]
       }
     ]
   },
@@ -60,9 +60,9 @@
     "country": "Saudi Arabia",
     "sources": [
       {
-        "sourceId": "mp3quran",
-        "sourceName": "Mp3Quran.net",
-        "baseUrl": "https://server11.mp3quran.net/sds",
+        "sourceId": "everyayah",
+        "sourceName": "EveryAyah.com",
+        "baseUrl": "https://everyayah.com/data/Abdurrahmaan_As-Sudais_192kbps",
         "qualities": ["high"]
       }
     ]
@@ -77,10 +77,10 @@
     "country": "Saudi Arabia",
     "sources": [
       {
-        "sourceId": "mp3quran",
-        "sourceName": "Mp3Quran.net",
-        "baseUrl": "https://server6.mp3quran.net/qtm",
-        "qualities": ["high"]
+        "sourceId": "everyayah",
+        "sourceName": "EveryAyah.com",
+        "baseUrl": "https://everyayah.com/data/Nasser_Alqatami_128kbps",
+        "qualities": ["medium"]
       }
     ]
   },
@@ -94,10 +94,10 @@
     "country": "Saudi Arabia",
     "sources": [
       {
-        "sourceId": "mp3quran",
-        "sourceName": "Mp3Quran.net",
-        "baseUrl": "https://server12.mp3quran.net/maher",
-        "qualities": ["high"]
+        "sourceId": "everyayah",
+        "sourceName": "EveryAyah.com",
+        "baseUrl": "https://everyayah.com/data/Maher_AlMuaiqly_64kbps",
+        "qualities": ["medium"]
       }
     ]
   },
@@ -111,10 +111,10 @@
     "country": "Saudi Arabia",
     "sources": [
       {
-        "sourceId": "mp3quran",
-        "sourceName": "Mp3Quran.net",
-        "baseUrl": "https://server6.mp3quran.net/ajm",
-        "qualities": ["high"]
+        "sourceId": "everyayah",
+        "sourceName": "EveryAyah.com",
+        "baseUrl": "https://everyayah.com/data/Ahmed_ibn_Ali_al-Ajamy_128kbps-ketaballah.net",
+        "qualities": ["medium"]
       }
     ]
   },
@@ -128,10 +128,10 @@
     "country": "Saudi Arabia",
     "sources": [
       {
-        "sourceId": "mp3quran",
-        "sourceName": "Mp3Quran.net",
-        "baseUrl": "https://server11.mp3quran.net/sds",
-        "qualities": ["high"]
+        "sourceId": "everyayah",
+        "sourceName": "EveryAyah.com",
+        "baseUrl": "https://everyayah.com/data/Saud_ash-Shuraym_128kbps",
+        "qualities": ["medium"]
       }
     ]
   },
@@ -145,10 +145,10 @@
     "country": "Saudi Arabia",
     "sources": [
       {
-        "sourceId": "mp3quran",
-        "sourceName": "Mp3Quran.net",
-        "baseUrl": "https://server8.mp3quran.net/ayyub",
-        "qualities": ["high"]
+        "sourceId": "everyayah",
+        "sourceName": "EveryAyah.com",
+        "baseUrl": "https://everyayah.com/data/Muhammad_Ayyoub_128kbps",
+        "qualities": ["medium"]
       }
     ]
   },
@@ -162,9 +162,9 @@
     "country": "Saudi Arabia",
     "sources": [
       {
-        "sourceId": "mp3quran",
-        "sourceName": "Mp3Quran.net",
-        "baseUrl": "https://server7.mp3quran.net/bsfr",
+        "sourceId": "everyayah",
+        "sourceName": "EveryAyah.com",
+        "baseUrl": "https://everyayah.com/data/Abdullah_Basfar_192kbps",
         "qualities": ["high"]
       }
     ]
@@ -179,10 +179,10 @@
     "country": "Saudi Arabia",
     "sources": [
       {
-        "sourceId": "mp3quran",
-        "sourceName": "Mp3Quran.net",
-        "baseUrl": "https://server10.mp3quran.net/yasser",
-        "qualities": ["high"]
+        "sourceId": "everyayah",
+        "sourceName": "EveryAyah.com",
+        "baseUrl": "https://everyayah.com/data/Yasser_Ad-Dussary_128kbps",
+        "qualities": ["medium"]
       }
     ]
   },
@@ -196,10 +196,10 @@
     "country": "Saudi Arabia",
     "sources": [
       {
-        "sourceId": "mp3quran",
-        "sourceName": "Mp3Quran.net",
-        "baseUrl": "https://server10.mp3quran.net/bandar",
-        "qualities": ["high"]
+        "sourceId": "everyayah",
+        "sourceName": "EveryAyah.com",
+        "baseUrl": "https://everyayah.com/data/Bandar_Balila_64kbps",
+        "qualities": ["medium"]
       }
     ]
   },
@@ -213,10 +213,10 @@
     "country": "Egypt",
     "sources": [
       {
-        "sourceId": "mp3quran",
-        "sourceName": "Mp3Quran.net",
-        "baseUrl": "https://server13.mp3quran.net/husr",
-        "qualities": ["high"]
+        "sourceId": "everyayah",
+        "sourceName": "EveryAyah.com",
+        "baseUrl": "https://everyayah.com/data/Husary_128kbps",
+        "qualities": ["medium"]
       }
     ]
   },
@@ -230,10 +230,10 @@
     "country": "Egypt",
     "sources": [
       {
-        "sourceId": "mp3quran",
-        "sourceName": "Mp3Quran.net",
-        "baseUrl": "https://server10.mp3quran.net/minsh",
-        "qualities": ["high"]
+        "sourceId": "everyayah",
+        "sourceName": "EveryAyah.com",
+        "baseUrl": "https://everyayah.com/data/Minshawy_Murattal_128kbps",
+        "qualities": ["medium"]
       }
     ]
   },
@@ -247,9 +247,9 @@
     "country": "Saudi Arabia",
     "sources": [
       {
-        "sourceId": "mp3quran",
-        "sourceName": "Mp3Quran.net",
-        "baseUrl": "https://server8.mp3quran.net/rifai",
+        "sourceId": "everyayah",
+        "sourceName": "EveryAyah.com",
+        "baseUrl": "https://everyayah.com/data/Hani_Rifai_192kbps",
         "qualities": ["high"]
       }
     ]
@@ -264,10 +264,10 @@
     "country": "Saudi Arabia",
     "sources": [
       {
-        "sourceId": "mp3quran",
-        "sourceName": "Mp3Quran.net",
-        "baseUrl": "https://server10.mp3quran.net/jlhani",
-        "qualities": ["high"]
+        "sourceId": "everyayah",
+        "sourceName": "EveryAyah.com",
+        "baseUrl": "https://everyayah.com/data/Abdullah_Awad_Al-Juhani_128kbps",
+        "qualities": ["medium"]
       }
     ]
   },
@@ -281,9 +281,9 @@
     "country": "Saudi Arabia",
     "sources": [
       {
-        "sourceId": "mp3quran",
-        "sourceName": "Mp3Quran.net",
-        "baseUrl": "https://server11.mp3quran.net/qht",
+        "sourceId": "everyayah",
+        "sourceName": "EveryAyah.com",
+        "baseUrl": "https://everyayah.com/data/Khalid_AlQahtani_192kbps",
         "qualities": ["high"]
       }
     ]
@@ -298,10 +298,10 @@
     "country": "Saudi Arabia",
     "sources": [
       {
-        "sourceId": "mp3quran",
-        "sourceName": "Mp3Quran.net",
-        "baseUrl": "https://server10.mp3quran.net/bader",
-        "qualities": ["high"]
+        "sourceId": "everyayah",
+        "sourceName": "EveryAyah.com",
+        "baseUrl": "https://everyayah.com/data/Salah_Al_Budair_128kbps",
+        "qualities": ["medium"]
       }
     ]
   },
@@ -315,10 +315,10 @@
     "country": "Yemen",
     "sources": [
       {
-        "sourceId": "mp3quran",
-        "sourceName": "Mp3Quran.net",
-        "baseUrl": "https://server10.mp3quran.net/shatri",
-        "qualities": ["high"]
+        "sourceId": "everyayah",
+        "sourceName": "EveryAyah.com",
+        "baseUrl": "https://everyayah.com/data/Abu_Bakr_Ash-Shaatree_128kbps",
+        "qualities": ["medium"]
       }
     ]
   },
@@ -332,10 +332,10 @@
     "country": "Saudi Arabia",
     "sources": [
       {
-        "sourceId": "mp3quran",
-        "sourceName": "Mp3Quran.net",
-        "baseUrl": "https://server8.mp3quran.net/jbr",
-        "qualities": ["high"]
+        "sourceId": "everyayah",
+        "sourceName": "EveryAyah.com",
+        "baseUrl": "https://everyayah.com/data/Ali_Jaber_64kbps",
+        "qualities": ["medium"]
       }
     ]
   }
