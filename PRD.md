@@ -1034,24 +1034,24 @@ Example: https://server8.mp3quran.net/basit/001.mp3
 
 ### 13.7 Phase 7: Storage Management
 **Week 6-7: Storage Features**
-- [ ] Implement storage calculation:
-  - [ ] Calculate total app storage usage
-  - [ ] Calculate storage per reciter
-  - [ ] Get device available storage
-- [ ] Create storage management UI:
-  - [ ] Storage overview in Settings
-  - [ ] Breakdown by reciter
-  - [ ] Detailed view with delete options
-- [ ] Implement delete functionality:
-  - [ ] Delete individual surah
-  - [ ] Delete all from reciter
-  - [ ] Delete all downloaded content
-  - [ ] Confirmation dialogs
-  - [ ] Update UI after deletion
-- [ ] Storage warnings:
-  - [ ] Warn if device storage < 500 MB
-  - [ ] Warn before large downloads
-  - [ ] Prevent download if insufficient space
+- [x] Implement storage calculation:
+  - [x] Calculate total app storage usage
+  - [x] Calculate storage per reciter
+  - [x] Get device available storage
+- [x] Create storage management UI:
+  - [x] Storage overview in Settings
+  - [x] Breakdown by reciter
+  - [x] Detailed view with delete options
+- [x] Implement delete functionality:
+  - [x] Delete individual surah
+  - [x] Delete all from reciter
+  - [x] Delete all downloaded content
+  - [x] Confirmation dialogs
+  - [x] Update UI after deletion
+- [x] Storage warnings:
+  - [x] Warn if device storage < 500 MB
+  - [x] Warn before large downloads
+  - [x] Prevent download if insufficient space
 - [ ] Cache management:
   - [ ] Clear streaming cache
   - [ ] Auto-cleanup old cache files

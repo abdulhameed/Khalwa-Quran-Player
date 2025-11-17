@@ -148,6 +148,12 @@ export const downloadFile = async (
     }
   }
 
+  // Check device storage (PRD requirement: warn if download size > available storage)
+  const hasSpace = await StorageService.hasEnoughSpace(download.fileSize);
+  if (!hasSpace) {
+    throw new Error('Insufficient storage space. Please free up some space and try again.');
+  }
+
   // Check WiFi requirement
   const preferences = await StorageService.getUserPreferences();
   if (preferences.wifiOnlyDownloads) {
@@ -559,6 +565,25 @@ export const queueMultipleDownloads = async (
   surahs: Surah[],
   quality: AudioQuality,
 ): Promise<void> => {
+  // Calculate total size for all downloads
+  let totalSize = 0;
+  for (const surah of surahs) {
+    const downloadId = `${reciter.id}_${surah.id}_${quality}`;
+    const existingDownload = await StorageService.getDownload(downloadId);
+
+    if (!existingDownload || existingDownload.status !== DOWNLOAD_STATUS.COMPLETED) {
+      totalSize += getEstimatedFileSize(surah.duration, quality);
+    }
+  }
+
+  // Check device storage before queuing (PRD requirement)
+  if (totalSize > 0) {
+    const hasSpace = await StorageService.hasEnoughSpace(totalSize);
+    if (!hasSpace) {
+      throw new Error(`Insufficient storage space. Need approximately ${(totalSize / (1024 * 1024)).toFixed(1)} MB. Please free up some space and try again.`);
+    }
+  }
+
   // Check WiFi requirement
   const preferences = await StorageService.getUserPreferences();
   if (preferences.wifiOnlyDownloads) {
@@ -675,4 +700,40 @@ export const getDownloadStats = async (): Promise<{
     failed: downloads.filter(d => d.status === DOWNLOAD_STATUS.FAILED).length,
     totalSize: await StorageService.getTotalDownloadedSize(),
   };
+};
+
+/**
+ * Delete all downloads for a reciter (files and metadata)
+ */
+export const deleteDownloadsByReciter = async (reciterId: string): Promise<void> => {
+  try {
+    // Get all downloads for this reciter
+    const downloads = await StorageService.getDownloadsByReciter(reciterId);
+
+    // Cancel any active downloads for this reciter
+    for (const download of downloads) {
+      if (activeDownloads.has(download.id)) {
+        await cancelDownload(download.id);
+      }
+    }
+
+    // Delete all files for this reciter
+    for (const download of downloads) {
+      const exists = await RNFS.exists(download.localPath);
+      if (exists) {
+        await RNFS.unlink(download.localPath);
+      }
+
+      // Remove from queue if present
+      await StorageService.removeFromDownloadQueue(download.id);
+    }
+
+    // Delete metadata for all downloads from this reciter
+    await StorageService.deleteDownloadsByReciter(reciterId);
+
+    console.log(`Deleted all downloads for reciter: ${reciterId}`);
+  } catch (error) {
+    console.error('Error deleting downloads by reciter:', error);
+    throw error;
+  }
 };
