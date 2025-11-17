@@ -1,0 +1,347 @@
+[
+  {
+    "id": 1,
+    "nameArabic": "الجزء الأول",
+    "nameEnglish": "Juz 1",
+    "surahs": [
+      { "surahId": 1, "isComplete": true },
+      { "surahId": 2, "isComplete": false, "startAyah": 1, "endAyah": 141 }
+    ]
+  },
+  {
+    "id": 2,
+    "nameArabic": "الجزء الثاني",
+    "nameEnglish": "Juz 2",
+    "surahs": [
+      { "surahId": 2, "isComplete": false, "startAyah": 142, "endAyah": 252 }
+    ]
+  },
+  {
+    "id": 3,
+    "nameArabic": "الجزء الثالث",
+    "nameEnglish": "Juz 3",
+    "surahs": [
+      { "surahId": 2, "isComplete": false, "startAyah": 253, "endAyah": 286 },
+      { "surahId": 3, "isComplete": false, "startAyah": 1, "endAyah": 92 }
+    ]
+  },
+  {
+    "id": 4,
+    "nameArabic": "الجزء الرابع",
+    "nameEnglish": "Juz 4",
+    "surahs": [
+      { "surahId": 3, "isComplete": false, "startAyah": 93, "endAyah": 200 },
+      { "surahId": 4, "isComplete": false, "startAyah": 1, "endAyah": 23 }
+    ]
+  },
+  {
+    "id": 5,
+    "nameArabic": "الجزء الخامس",
+    "nameEnglish": "Juz 5",
+    "surahs": [
+      { "surahId": 4, "isComplete": false, "startAyah": 24, "endAyah": 147 }
+    ]
+  },
+  {
+    "id": 6,
+    "nameArabic": "الجزء السادس",
+    "nameEnglish": "Juz 6",
+    "surahs": [
+      { "surahId": 4, "isComplete": false, "startAyah": 148, "endAyah": 176 },
+      { "surahId": 5, "isComplete": false, "startAyah": 1, "endAyah": 81 }
+    ]
+  },
+  {
+    "id": 7,
+    "nameArabic": "الجزء السابع",
+    "nameEnglish": "Juz 7",
+    "surahs": [
+      { "surahId": 5, "isComplete": false, "startAyah": 82, "endAyah": 120 },
+      { "surahId": 6, "isComplete": false, "startAyah": 1, "endAyah": 110 }
+    ]
+  },
+  {
+    "id": 8,
+    "nameArabic": "الجزء الثامن",
+    "nameEnglish": "Juz 8",
+    "surahs": [
+      { "surahId": 6, "isComplete": false, "startAyah": 111, "endAyah": 165 },
+      { "surahId": 7, "isComplete": false, "startAyah": 1, "endAyah": 87 }
+    ]
+  },
+  {
+    "id": 9,
+    "nameArabic": "الجزء التاسع",
+    "nameEnglish": "Juz 9",
+    "surahs": [
+      { "surahId": 7, "isComplete": false, "startAyah": 88, "endAyah": 206 },
+      { "surahId": 8, "isComplete": true }
+    ]
+  },
+  {
+    "id": 10,
+    "nameArabic": "الجزء العاشر",
+    "nameEnglish": "Juz 10",
+    "surahs": [
+      { "surahId": 9, "isComplete": false, "startAyah": 1, "endAyah": 92 }
+    ]
+  },
+  {
+    "id": 11,
+    "nameArabic": "الجزء الحادي عشر",
+    "nameEnglish": "Juz 11",
+    "surahs": [
+      { "surahId": 9, "isComplete": false, "startAyah": 93, "endAyah": 129 },
+      { "surahId": 10, "isComplete": true },
+      { "surahId": 11, "isComplete": false, "startAyah": 1, "endAyah": 5 }
+    ]
+  },
+  {
+    "id": 12,
+    "nameArabic": "الجزء الثاني عشر",
+    "nameEnglish": "Juz 12",
+    "surahs": [
+      { "surahId": 11, "isComplete": false, "startAyah": 6, "endAyah": 123 },
+      { "surahId": 12, "isComplete": false, "startAyah": 1, "endAyah": 52 }
+    ]
+  },
+  {
+    "id": 13,
+    "nameArabic": "الجزء الثالث عشر",
+    "nameEnglish": "Juz 13",
+    "surahs": [
+      { "surahId": 12, "isComplete": false, "startAyah": 53, "endAyah": 111 },
+      { "surahId": 13, "isComplete": true },
+      { "surahId": 14, "isComplete": true },
+      { "surahId": 15, "isComplete": false, "startAyah": 1, "endAyah": 1 }
+    ]
+  },
+  {
+    "id": 14,
+    "nameArabic": "الجزء الرابع عشر",
+    "nameEnglish": "Juz 14",
+    "surahs": [
+      { "surahId": 15, "isComplete": false, "startAyah": 2, "endAyah": 99 },
+      { "surahId": 16, "isComplete": false, "startAyah": 1, "endAyah": 128 }
+    ]
+  },
+  {
+    "id": 15,
+    "nameArabic": "الجزء الخامس عشر",
+    "nameEnglish": "Juz 15",
+    "surahs": [
+      { "surahId": 17, "isComplete": true },
+      { "surahId": 18, "isComplete": false, "startAyah": 1, "endAyah": 74 }
+    ]
+  },
+  {
+    "id": 16,
+    "nameArabic": "الجزء السادس عشر",
+    "nameEnglish": "Juz 16",
+    "surahs": [
+      { "surahId": 18, "isComplete": false, "startAyah": 75, "endAyah": 110 },
+      { "surahId": 19, "isComplete": true },
+      { "surahId": 20, "isComplete": false, "startAyah": 1, "endAyah": 135 }
+    ]
+  },
+  {
+    "id": 17,
+    "nameArabic": "الجزء السابع عشر",
+    "nameEnglish": "Juz 17",
+    "surahs": [
+      { "surahId": 21, "isComplete": true },
+      { "surahId": 22, "isComplete": false, "startAyah": 1, "endAyah": 78 }
+    ]
+  },
+  {
+    "id": 18,
+    "nameArabic": "الجزء الثامن عشر",
+    "nameEnglish": "Juz 18",
+    "surahs": [
+      { "surahId": 23, "isComplete": true },
+      { "surahId": 24, "isComplete": true },
+      { "surahId": 25, "isComplete": false, "startAyah": 1, "endAyah": 20 }
+    ]
+  },
+  {
+    "id": 19,
+    "nameArabic": "الجزء التاسع عشر",
+    "nameEnglish": "Juz 19",
+    "surahs": [
+      { "surahId": 25, "isComplete": false, "startAyah": 21, "endAyah": 77 },
+      { "surahId": 26, "isComplete": true },
+      { "surahId": 27, "isComplete": false, "startAyah": 1, "endAyah": 59 }
+    ]
+  },
+  {
+    "id": 20,
+    "nameArabic": "الجزء العشرون",
+    "nameEnglish": "Juz 20",
+    "surahs": [
+      { "surahId": 27, "isComplete": false, "startAyah": 60, "endAyah": 93 },
+      { "surahId": 28, "isComplete": true },
+      { "surahId": 29, "isComplete": false, "startAyah": 1, "endAyah": 45 }
+    ]
+  },
+  {
+    "id": 21,
+    "nameArabic": "الجزء الحادي والعشرون",
+    "nameEnglish": "Juz 21",
+    "surahs": [
+      { "surahId": 29, "isComplete": false, "startAyah": 46, "endAyah": 69 },
+      { "surahId": 30, "isComplete": true },
+      { "surahId": 31, "isComplete": true },
+      { "surahId": 32, "isComplete": true },
+      { "surahId": 33, "isComplete": false, "startAyah": 1, "endAyah": 30 }
+    ]
+  },
+  {
+    "id": 22,
+    "nameArabic": "الجزء الثاني والعشرون",
+    "nameEnglish": "Juz 22",
+    "surahs": [
+      { "surahId": 33, "isComplete": false, "startAyah": 31, "endAyah": 73 },
+      { "surahId": 34, "isComplete": true },
+      { "surahId": 35, "isComplete": true },
+      { "surahId": 36, "isComplete": false, "startAyah": 1, "endAyah": 27 }
+    ]
+  },
+  {
+    "id": 23,
+    "nameArabic": "الجزء الثالث والعشرون",
+    "nameEnglish": "Juz 23",
+    "surahs": [
+      { "surahId": 36, "isComplete": false, "startAyah": 28, "endAyah": 83 },
+      { "surahId": 37, "isComplete": true },
+      { "surahId": 38, "isComplete": true },
+      { "surahId": 39, "isComplete": false, "startAyah": 1, "endAyah": 31 }
+    ]
+  },
+  {
+    "id": 24,
+    "nameArabic": "الجزء الرابع والعشرون",
+    "nameEnglish": "Juz 24",
+    "surahs": [
+      { "surahId": 39, "isComplete": false, "startAyah": 32, "endAyah": 75 },
+      { "surahId": 40, "isComplete": true },
+      { "surahId": 41, "isComplete": false, "startAyah": 1, "endAyah": 46 }
+    ]
+  },
+  {
+    "id": 25,
+    "nameArabic": "الجزء الخامس والعشرون",
+    "nameEnglish": "Juz 25",
+    "surahs": [
+      { "surahId": 41, "isComplete": false, "startAyah": 47, "endAyah": 54 },
+      { "surahId": 42, "isComplete": true },
+      { "surahId": 43, "isComplete": true },
+      { "surahId": 44, "isComplete": true },
+      { "surahId": 45, "isComplete": false, "startAyah": 1, "endAyah": 37 }
+    ]
+  },
+  {
+    "id": 26,
+    "nameArabic": "الجزء السادس والعشرون",
+    "nameEnglish": "Juz 26",
+    "surahs": [
+      { "surahId": 46, "isComplete": true },
+      { "surahId": 47, "isComplete": true },
+      { "surahId": 48, "isComplete": true },
+      { "surahId": 49, "isComplete": true },
+      { "surahId": 50, "isComplete": true },
+      { "surahId": 51, "isComplete": false, "startAyah": 1, "endAyah": 30 }
+    ]
+  },
+  {
+    "id": 27,
+    "nameArabic": "الجزء السابع والعشرون",
+    "nameEnglish": "Juz 27",
+    "surahs": [
+      { "surahId": 51, "isComplete": false, "startAyah": 31, "endAyah": 60 },
+      { "surahId": 52, "isComplete": true },
+      { "surahId": 53, "isComplete": true },
+      { "surahId": 54, "isComplete": true },
+      { "surahId": 55, "isComplete": true },
+      { "surahId": 56, "isComplete": true },
+      { "surahId": 57, "isComplete": false, "startAyah": 1, "endAyah": 29 }
+    ]
+  },
+  {
+    "id": 28,
+    "nameArabic": "الجزء الثامن والعشرون",
+    "nameEnglish": "Juz 28",
+    "surahs": [
+      { "surahId": 58, "isComplete": true },
+      { "surahId": 59, "isComplete": true },
+      { "surahId": 60, "isComplete": true },
+      { "surahId": 61, "isComplete": true },
+      { "surahId": 62, "isComplete": true },
+      { "surahId": 63, "isComplete": true },
+      { "surahId": 64, "isComplete": true },
+      { "surahId": 65, "isComplete": true },
+      { "surahId": 66, "isComplete": true }
+    ]
+  },
+  {
+    "id": 29,
+    "nameArabic": "الجزء التاسع والعشرون",
+    "nameEnglish": "Juz 29",
+    "surahs": [
+      { "surahId": 67, "isComplete": true },
+      { "surahId": 68, "isComplete": true },
+      { "surahId": 69, "isComplete": true },
+      { "surahId": 70, "isComplete": true },
+      { "surahId": 71, "isComplete": true },
+      { "surahId": 72, "isComplete": true },
+      { "surahId": 73, "isComplete": true },
+      { "surahId": 74, "isComplete": true },
+      { "surahId": 75, "isComplete": true },
+      { "surahId": 76, "isComplete": true },
+      { "surahId": 77, "isComplete": false, "startAyah": 1, "endAyah": 50 }
+    ]
+  },
+  {
+    "id": 30,
+    "nameArabic": "الجزء الثلاثون",
+    "nameEnglish": "Juz 30",
+    "surahs": [
+      { "surahId": 78, "isComplete": true },
+      { "surahId": 79, "isComplete": true },
+      { "surahId": 80, "isComplete": true },
+      { "surahId": 81, "isComplete": true },
+      { "surahId": 82, "isComplete": true },
+      { "surahId": 83, "isComplete": true },
+      { "surahId": 84, "isComplete": true },
+      { "surahId": 85, "isComplete": true },
+      { "surahId": 86, "isComplete": true },
+      { "surahId": 87, "isComplete": true },
+      { "surahId": 88, "isComplete": true },
+      { "surahId": 89, "isComplete": true },
+      { "surahId": 90, "isComplete": true },
+      { "surahId": 91, "isComplete": true },
+      { "surahId": 92, "isComplete": true },
+      { "surahId": 93, "isComplete": true },
+      { "surahId": 94, "isComplete": true },
+      { "surahId": 95, "isComplete": true },
+      { "surahId": 96, "isComplete": true },
+      { "surahId": 97, "isComplete": true },
+      { "surahId": 98, "isComplete": true },
+      { "surahId": 99, "isComplete": true },
+      { "surahId": 100, "isComplete": true },
+      { "surahId": 101, "isComplete": true },
+      { "surahId": 102, "isComplete": true },
+      { "surahId": 103, "isComplete": true },
+      { "surahId": 104, "isComplete": true },
+      { "surahId": 105, "isComplete": true },
+      { "surahId": 106, "isComplete": true },
+      { "surahId": 107, "isComplete": true },
+      { "surahId": 108, "isComplete": true },
+      { "surahId": 109, "isComplete": true },
+      { "surahId": 110, "isComplete": true },
+      { "surahId": 111, "isComplete": true },
+      { "surahId": 112, "isComplete": true },
+      { "surahId": 113, "isComplete": true },
+      { "surahId": 114, "isComplete": true }
+    ]
+  }
+]

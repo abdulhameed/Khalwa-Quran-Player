@@ -16,10 +16,11 @@ import {
 } from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {Reciter, Surah, AudioQuality, ReciterSource} from '../utils/types';
+import {Reciter, Surah, AudioQuality, ReciterSource, Juz} from '../utils/types';
 import {COLORS, DIMENSIONS} from '../utils/constants';
 import {SurahListItem} from '../components/SurahListItem';
 import {QualitySelectionDialog} from '../components/QualitySelectionDialog';
+import {JuzSelectorDialog} from '../components/JuzSelectorDialog';
 import {useDownload} from '../contexts/DownloadContext';
 
 // Import data
@@ -44,6 +45,8 @@ export const ReciterDetailScreen: React.FC<Props> = ({route, navigation}) => {
   );
   const [showSourceDropdown, setShowSourceDropdown] = useState(false);
   const [isDownloadingAll, setIsDownloadingAll] = useState(false);
+  const [showJuzSelector, setShowJuzSelector] = useState(false);
+  const [selectedJuz, setSelectedJuz] = useState<Juz | null>(null);
 
   const {startDownload, refreshDownloads} = useDownload();
 
@@ -108,6 +111,7 @@ export const ReciterDetailScreen: React.FC<Props> = ({route, navigation}) => {
     setShowQualityDialog(false);
     setSelectedSurah(null);
     setIsDownloadingAll(false);
+    setSelectedJuz(null);
   };
 
   /**
@@ -162,24 +166,40 @@ export const ReciterDetailScreen: React.FC<Props> = ({route, navigation}) => {
   const handleBatchQualitySelect = async (quality: AudioQuality) => {
     setShowQualityDialog(false);
 
-    const surahsToDownload = isDownloadingAll
-      ? surahs
-      : surahs.filter(s => selectedSurahs.has(s.id));
+    let surahsToDownload: Surah[] = [];
+
+    // Determine which surahs to download
+    if (isDownloadingAll) {
+      surahsToDownload = surahs;
+    } else if (selectedJuz) {
+      // Get unique surah IDs from the selected Juz
+      const juzSurahIds = selectedJuz.surahs.map(js => js.surahId);
+      surahsToDownload = surahs.filter(s => juzSurahIds.includes(s.id));
+    } else {
+      surahsToDownload = surahs.filter(s => selectedSurahs.has(s.id));
+    }
 
     try {
       for (const surah of surahsToDownload) {
         await startDownload(reciter, surah, quality);
       }
 
+      const downloadType = selectedJuz
+        ? `${selectedJuz.nameEnglish}`
+        : isDownloadingAll
+        ? 'all surahs'
+        : 'selected surahs';
+
       Alert.alert(
         'Downloads Started',
-        `${surahsToDownload.length} surah${surahsToDownload.length > 1 ? 's' : ''} ${surahsToDownload.length > 1 ? 'are' : 'is'} downloading...`,
+        `${surahsToDownload.length} surah${surahsToDownload.length > 1 ? 's' : ''} from ${downloadType} ${surahsToDownload.length > 1 ? 'are' : 'is'} downloading...`,
         [{text: 'OK'}]
       );
 
       setIsMultiSelectMode(false);
       setSelectedSurahs(new Set());
       setIsDownloadingAll(false);
+      setSelectedJuz(null);
     } catch (error: any) {
       Alert.alert(
         'Download Failed',
@@ -197,6 +217,31 @@ export const ReciterDetailScreen: React.FC<Props> = ({route, navigation}) => {
   const handleSourceSelect = (source: ReciterSource) => {
     setSelectedSource(source);
     setShowSourceDropdown(false);
+  };
+
+  /**
+   * Handle Download by Juz button press
+   */
+  const handleDownloadByJuz = () => {
+    setShowJuzSelector(true);
+  };
+
+  /**
+   * Handle Juz selection
+   */
+  const handleJuzSelect = (juz: Juz) => {
+    setSelectedJuz(juz);
+    setShowJuzSelector(false);
+    // Use first surah for quality dialog display
+    setSelectedSurah(surahs[0]);
+    setShowQualityDialog(true);
+  };
+
+  /**
+   * Handle Juz selector cancel
+   */
+  const handleJuzSelectorCancel = () => {
+    setShowJuzSelector(false);
   };
 
   /**
@@ -281,14 +326,24 @@ export const ReciterDetailScreen: React.FC<Props> = ({route, navigation}) => {
         </View>
       )}
 
-      {/* Download All Button */}
-      <TouchableOpacity
-        style={styles.downloadAllButton}
-        onPress={handleDownloadAll}
-      >
-        <Icon name="cloud-download" size={20} color={COLORS.white} />
-        <Text style={styles.downloadAllButtonText}>Download All Surahs</Text>
-      </TouchableOpacity>
+      {/* Batch Download Buttons */}
+      <View style={styles.batchDownloadContainer}>
+        <TouchableOpacity
+          style={styles.downloadByJuzButton}
+          onPress={handleDownloadByJuz}
+        >
+          <Icon name="albums-outline" size={20} color={COLORS.white} />
+          <Text style={styles.downloadByJuzButtonText}>By Juz</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.downloadAllButton}
+          onPress={handleDownloadAll}
+        >
+          <Icon name="cloud-download" size={20} color={COLORS.white} />
+          <Text style={styles.downloadAllButtonText}>All Surahs</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 
@@ -375,10 +430,17 @@ export const ReciterDetailScreen: React.FC<Props> = ({route, navigation}) => {
         <QualitySelectionDialog
           visible={showQualityDialog}
           surah={selectedSurah}
-          onSelect={isMultiSelectMode || isDownloadingAll ? handleBatchQualitySelect : handleQualitySelect}
+          onSelect={isMultiSelectMode || isDownloadingAll || selectedJuz ? handleBatchQualitySelect : handleQualitySelect}
           onCancel={handleQualityCancel}
         />
       )}
+
+      <JuzSelectorDialog
+        visible={showJuzSelector}
+        reciterName={reciter.nameEnglish}
+        onSelect={handleJuzSelect}
+        onCancel={handleJuzSelectorCancel}
+      />
     </View>
   );
 };
@@ -500,15 +562,35 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 
-  // Download All Button
+  // Batch Download Buttons
+  batchDownloadContainer: {
+    flexDirection: 'row',
+    gap: DIMENSIONS.spacing.sm,
+  },
+  downloadByJuzButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: COLORS.secondary,
+    padding: DIMENSIONS.spacing.md,
+    borderRadius: DIMENSIONS.borderRadius.md,
+    gap: DIMENSIONS.spacing.xs,
+  },
+  downloadByJuzButtonText: {
+    fontSize: DIMENSIONS.fontSize.md,
+    fontWeight: '600',
+    color: COLORS.white,
+  },
   downloadAllButton: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: COLORS.primary,
     padding: DIMENSIONS.spacing.md,
     borderRadius: DIMENSIONS.borderRadius.md,
-    gap: DIMENSIONS.spacing.sm,
+    gap: DIMENSIONS.spacing.xs,
   },
   downloadAllButtonText: {
     fontSize: DIMENSIONS.fontSize.md,
