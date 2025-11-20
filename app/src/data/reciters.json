@@ -9,6 +9,18 @@
     "country": "Egypt",
     "sources": [
       {
+        "sourceId": "quranicaudio",
+        "sourceName": "QuranicAudio.com",
+        "baseUrl": "https://download.quranicaudio.com/quran/abdul_baset_mujawwad",
+        "qualities": ["high"]
+      },
+      {
+        "sourceId": "mp3quran",
+        "sourceName": "MP3Quran.net",
+        "baseUrl": "https://server7.mp3quran.net/basit",
+        "qualities": ["high"]
+      },
+      {
         "sourceId": "everyayah",
         "sourceName": "EveryAyah.com",
         "baseUrl": "https://everyayah.com/data/Abdul_Basit_Murattal_192kbps",
@@ -25,6 +37,18 @@
     "style": "Murattal",
     "country": "Kuwait",
     "sources": [
+      {
+        "sourceId": "quranicaudio",
+        "sourceName": "QuranicAudio.com",
+        "baseUrl": "https://download.quranicaudio.com/quran/mishary_rashid_alafasy",
+        "qualities": ["high"]
+      },
+      {
+        "sourceId": "mp3quran",
+        "sourceName": "MP3Quran.net",
+        "baseUrl": "https://server8.mp3quran.net/afs",
+        "qualities": ["high"]
+      },
       {
         "sourceId": "everyayah",
         "sourceName": "EveryAyah.com",
@@ -43,6 +67,18 @@
     "country": "Saudi Arabia",
     "sources": [
       {
+        "sourceId": "quranicaudio",
+        "sourceName": "QuranicAudio.com",
+        "baseUrl": "https://download.quranicaudio.com/quran/saad_al-ghamdi",
+        "qualities": ["high"]
+      },
+      {
+        "sourceId": "mp3quran",
+        "sourceName": "MP3Quran.net",
+        "baseUrl": "https://server7.mp3quran.net/s_gmd",
+        "qualities": ["high"]
+      },
+      {
         "sourceId": "everyayah",
         "sourceName": "EveryAyah.com",
         "baseUrl": "https://everyayah.com/data/Ghamadi_40kbps",
@@ -59,6 +95,18 @@
     "style": "Murattal",
     "country": "Saudi Arabia",
     "sources": [
+      {
+        "sourceId": "quranicaudio",
+        "sourceName": "QuranicAudio.com",
+        "baseUrl": "https://download.quranicaudio.com/quran/abdurrahmaan_as-sudays",
+        "qualities": ["high"]
+      },
+      {
+        "sourceId": "mp3quran",
+        "sourceName": "MP3Quran.net",
+        "baseUrl": "https://server11.mp3quran.net/sds",
+        "qualities": ["high"]
+      },
       {
         "sourceId": "everyayah",
         "sourceName": "EveryAyah.com",
@@ -77,6 +125,18 @@
     "country": "Saudi Arabia",
     "sources": [
       {
+        "sourceId": "quranicaudio",
+        "sourceName": "QuranicAudio.com",
+        "baseUrl": "https://download.quranicaudio.com/quran/nasser_bin_ali_alqatami",
+        "qualities": ["high"]
+      },
+      {
+        "sourceId": "mp3quran",
+        "sourceName": "MP3Quran.net",
+        "baseUrl": "https://server6.mp3quran.net/qtm",
+        "qualities": ["high"]
+      },
+      {
         "sourceId": "everyayah",
         "sourceName": "EveryAyah.com",
         "baseUrl": "https://everyayah.com/data/Nasser_Alqatami_128kbps",
@@ -93,6 +153,18 @@
     "style": "Murattal",
     "country": "Saudi Arabia",
     "sources": [
+      {
+        "sourceId": "quranicaudio",
+        "sourceName": "QuranicAudio.com",
+        "baseUrl": "https://download.quranicaudio.com/quran/maher_almuaiqly",
+        "qualities": ["high"]
+      },
+      {
+        "sourceId": "mp3quran",
+        "sourceName": "MP3Quran.net",
+        "baseUrl": "https://server12.mp3quran.net/maher",
+        "qualities": ["high"]
+      },
       {
         "sourceId": "everyayah",
         "sourceName": "EveryAyah.com",
@@ -111,6 +183,18 @@
     "country": "Saudi Arabia",
     "sources": [
       {
+        "sourceId": "quranicaudio",
+        "sourceName": "QuranicAudio.com",
+        "baseUrl": "https://download.quranicaudio.com/quran/ahmad_bin_ali_alajamy",
+        "qualities": ["high"]
+      },
+      {
+        "sourceId": "mp3quran",
+        "sourceName": "MP3Quran.net",
+        "baseUrl": "https://server10.mp3quran.net/ajm",
+        "qualities": ["high"]
+      },
+      {
         "sourceId": "everyayah",
         "sourceName": "EveryAyah.com",
         "baseUrl": "https://everyayah.com/data/Ahmed_ibn_Ali_al-Ajamy_128kbps-ketaballah.net",
@@ -127,6 +211,18 @@
     "style": "Murattal",
     "country": "Saudi Arabia",
     "sources": [
+      {
+        "sourceId": "quranicaudio",
+        "sourceName": "QuranicAudio.com",
+        "baseUrl": "https://download.quranicaudio.com/quran/saud_ash-shuraym",
+        "qualities": ["high"]
+      },
+      {
+        "sourceId": "mp3quran",
+        "sourceName": "MP3Quran.net",
+        "baseUrl": "https://server11.mp3quran.net/shr",
+        "qualities": ["high"]
+      },
       {
         "sourceId": "everyayah",
         "sourceName": "EveryAyah.com",
@@ -145,6 +241,18 @@
     "country": "Saudi Arabia",
     "sources": [
       {
+        "sourceId": "quranicaudio",
+        "sourceName": "QuranicAudio.com",
+        "baseUrl": "https://download.quranicaudio.com/quran/muhammad_ayyoub",
+        "qualities": ["high"]
+      },
+      {
+        "sourceId": "mp3quran",
+        "sourceName": "MP3Quran.net",
+        "baseUrl": "https://server8.mp3quran.net/ayyub",
+        "qualities": ["high"]
+      },
+      {
         "sourceId": "everyayah",
         "sourceName": "EveryAyah.com",
         "baseUrl": "https://everyayah.com/data/Muhammad_Ayyoub_128kbps",
@@ -161,6 +269,18 @@
     "style": "Murattal",
     "country": "Saudi Arabia",
     "sources": [
+      {
+        "sourceId": "quranicaudio",
+        "sourceName": "QuranicAudio.com",
+        "baseUrl": "https://download.quranicaudio.com/quran/abdullah_basfar",
+        "qualities": ["high"]
+      },
+      {
+        "sourceId": "mp3quran",
+        "sourceName": "MP3Quran.net",
+        "baseUrl": "https://server8.mp3quran.net/basfar",
+        "qualities": ["high"]
+      },
       {
         "sourceId": "everyayah",
         "sourceName": "EveryAyah.com",
@@ -179,6 +299,18 @@
     "country": "Saudi Arabia",
     "sources": [
       {
+        "sourceId": "quranicaudio",
+        "sourceName": "QuranicAudio.com",
+        "baseUrl": "https://download.quranicaudio.com/quran/yasser_ad-dussary",
+        "qualities": ["high"]
+      },
+      {
+        "sourceId": "mp3quran",
+        "sourceName": "MP3Quran.net",
+        "baseUrl": "https://server11.mp3quran.net/yasser",
+        "qualities": ["high"]
+      },
+      {
         "sourceId": "everyayah",
         "sourceName": "EveryAyah.com",
         "baseUrl": "https://everyayah.com/data/Yasser_Ad-Dussary_128kbps",
@@ -195,6 +327,18 @@
     "style": "Murattal",
     "country": "Saudi Arabia",
     "sources": [
+      {
+        "sourceId": "quranicaudio",
+        "sourceName": "QuranicAudio.com",
+        "baseUrl": "https://download.quranicaudio.com/quran/bandar_baleelah",
+        "qualities": ["high"]
+      },
+      {
+        "sourceId": "mp3quran",
+        "sourceName": "MP3Quran.net",
+        "baseUrl": "https://server13.mp3quran.net/bandr",
+        "qualities": ["high"]
+      },
       {
         "sourceId": "everyayah",
         "sourceName": "EveryAyah.com",
@@ -213,6 +357,18 @@
     "country": "Egypt",
     "sources": [
       {
+        "sourceId": "quranicaudio",
+        "sourceName": "QuranicAudio.com",
+        "baseUrl": "https://download.quranicaudio.com/quran/mahmood_khaleel_al-husaree",
+        "qualities": ["high"]
+      },
+      {
+        "sourceId": "mp3quran",
+        "sourceName": "MP3Quran.net",
+        "baseUrl": "https://server8.mp3quran.net/hussary",
+        "qualities": ["high"]
+      },
+      {
         "sourceId": "everyayah",
         "sourceName": "EveryAyah.com",
         "baseUrl": "https://everyayah.com/data/Husary_128kbps",
@@ -229,6 +385,18 @@
     "style": "Mujawwad",
     "country": "Egypt",
     "sources": [
+      {
+        "sourceId": "quranicaudio",
+        "sourceName": "QuranicAudio.com",
+        "baseUrl": "https://download.quranicaudio.com/quran/muhammad_siddeeq_al-minshaawee",
+        "qualities": ["high"]
+      },
+      {
+        "sourceId": "mp3quran",
+        "sourceName": "MP3Quran.net",
+        "baseUrl": "https://server10.mp3quran.net/minsh",
+        "qualities": ["high"]
+      },
       {
         "sourceId": "everyayah",
         "sourceName": "EveryAyah.com",
@@ -247,6 +415,18 @@
     "country": "Saudi Arabia",
     "sources": [
       {
+        "sourceId": "quranicaudio",
+        "sourceName": "QuranicAudio.com",
+        "baseUrl": "https://download.quranicaudio.com/quran/hani_ar-rifai",
+        "qualities": ["high"]
+      },
+      {
+        "sourceId": "mp3quran",
+        "sourceName": "MP3Quran.net",
+        "baseUrl": "https://server8.mp3quran.net/hani",
+        "qualities": ["high"]
+      },
+      {
         "sourceId": "everyayah",
         "sourceName": "EveryAyah.com",
         "baseUrl": "https://everyayah.com/data/Hani_Rifai_192kbps",
@@ -263,6 +443,18 @@
     "style": "Murattal",
     "country": "Saudi Arabia",
     "sources": [
+      {
+        "sourceId": "quranicaudio",
+        "sourceName": "QuranicAudio.com",
+        "baseUrl": "https://download.quranicaudio.com/quran/abdullah_awad_aljuhani",
+        "qualities": ["high"]
+      },
+      {
+        "sourceId": "mp3quran",
+        "sourceName": "MP3Quran.net",
+        "baseUrl": "https://server10.mp3quran.net/jhn",
+        "qualities": ["high"]
+      },
       {
         "sourceId": "everyayah",
         "sourceName": "EveryAyah.com",
@@ -281,6 +473,18 @@
     "country": "Saudi Arabia",
     "sources": [
       {
+        "sourceId": "quranicaudio",
+        "sourceName": "QuranicAudio.com",
+        "baseUrl": "https://download.quranicaudio.com/quran/khalid_al-qahtanee",
+        "qualities": ["high"]
+      },
+      {
+        "sourceId": "mp3quran",
+        "sourceName": "MP3Quran.net",
+        "baseUrl": "https://server6.mp3quran.net/khalid",
+        "qualities": ["high"]
+      },
+      {
         "sourceId": "everyayah",
         "sourceName": "EveryAyah.com",
         "baseUrl": "https://everyayah.com/data/Khalid_AlQahtani_192kbps",
@@ -297,6 +501,18 @@
     "style": "Murattal",
     "country": "Saudi Arabia",
     "sources": [
+      {
+        "sourceId": "quranicaudio",
+        "sourceName": "QuranicAudio.com",
+        "baseUrl": "https://download.quranicaudio.com/quran/salah_al_budair",
+        "qualities": ["high"]
+      },
+      {
+        "sourceId": "mp3quran",
+        "sourceName": "MP3Quran.net",
+        "baseUrl": "https://server7.mp3quran.net/s_bdr",
+        "qualities": ["high"]
+      },
       {
         "sourceId": "everyayah",
         "sourceName": "EveryAyah.com",
@@ -315,6 +531,18 @@
     "country": "Yemen",
     "sources": [
       {
+        "sourceId": "quranicaudio",
+        "sourceName": "QuranicAudio.com",
+        "baseUrl": "https://download.quranicaudio.com/quran/abu_bakr_ash-shaatree",
+        "qualities": ["high"]
+      },
+      {
+        "sourceId": "mp3quran",
+        "sourceName": "MP3Quran.net",
+        "baseUrl": "https://server11.mp3quran.net/shatri",
+        "qualities": ["high"]
+      },
+      {
         "sourceId": "everyayah",
         "sourceName": "EveryAyah.com",
         "baseUrl": "https://everyayah.com/data/Abu_Bakr_Ash-Shaatree_128kbps",
@@ -331,6 +559,18 @@
     "style": "Murattal",
     "country": "Saudi Arabia",
     "sources": [
+      {
+        "sourceId": "quranicaudio",
+        "sourceName": "QuranicAudio.com",
+        "baseUrl": "https://download.quranicaudio.com/quran/ali_jaber",
+        "qualities": ["high"]
+      },
+      {
+        "sourceId": "mp3quran",
+        "sourceName": "MP3Quran.net",
+        "baseUrl": "https://server12.mp3quran.net/ali_jaber",
+        "qualities": ["high"]
+      },
       {
         "sourceId": "everyayah",
         "sourceName": "EveryAyah.com",
